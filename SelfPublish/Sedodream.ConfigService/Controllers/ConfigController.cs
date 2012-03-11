@@ -11,7 +11,7 @@ namespace Sedodream.SelfPub.ConfigService.Controllers {
         /// <summary>
         /// This is what clients will call to add new packages.
         /// </summary>
-        /// <param name="jsonPackage"></param>
+        /// <param name="jsonPackage">This object will be converted to an IPackage object</param>
         public void PostPackage(string jsonPackage) {
             throw new NotImplementedException();
         }
@@ -26,7 +26,7 @@ namespace Sedodream.SelfPub.ConfigService.Controllers {
                     Message = "bar string Here",
                     Time = DateTime.Now,
                     InnerBar = new {
-                        IIB = "string here",
+                        IIB = "string here"
                         ObjHere = new {
                             SampleStr = "sample string here",
                             SomeInt = 1
