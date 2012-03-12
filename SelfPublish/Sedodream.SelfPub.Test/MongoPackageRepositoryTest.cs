@@ -12,7 +12,7 @@
         [TestMethod]
         public void TestInsert() {            
             Guid guid = Guid.NewGuid();
-            IPackage package = new Package {
+            Package package = new Package {
                 Name = guid.ToString(),
                 PackageLocation = new Uri(Path.Combine(@"C:\temp\", guid.ToString())),
                 PackageManifest = "some string"
@@ -22,7 +22,7 @@
 
             MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
 
-            MongoPackageRepository repo = new MongoPackageRepository(connectionString, mub.DatabaseName);
+            MongoPackageRepository repo = new MongoPackageRepository(connectionString);
 
             repo.Reset();
 

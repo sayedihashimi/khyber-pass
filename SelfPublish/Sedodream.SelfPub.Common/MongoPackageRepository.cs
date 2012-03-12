@@ -10,19 +10,21 @@
         private MongoServer Server { get; set; }
         private MongoDatabase Database { get; set; }
 
-        public MongoPackageRepository(string baseAddress, string databaseName = "self-publish") {
+        public MongoPackageRepository(string baseAddress) {
             if (string.IsNullOrEmpty(baseAddress)) { throw new ArgumentNullException("baseAddress"); }
 
-            this.Server = MongoServer.Create(baseAddress);
+            MongoUrl mongoUrl = new MongoUrl(baseAddress);
+            this.Server = MongoServer.Create(mongoUrl);
             this.Server.Connect();
-            if (!Server.DatabaseExists(CommonStrings.Database.DatabaseName)) {
+
+            if (!Server.DatabaseExists(mongoUrl.DatabaseName)) {
                 // get the database to create it
                 var db = this.Server.GetDatabase(CommonStrings.Database.DatabaseName);
                 // create the collection
                 db.CreateCollection(CommonStrings.Database.CollectionName);
             }
 
-            this.Database = this.Server.GetDatabase(databaseName);
+            this.Database = this.Server.GetDatabase(mongoUrl.DatabaseName);
         }
         /// <summary>
         /// In this case the BaseAddress is the MongoDB connection string.
@@ -32,26 +34,30 @@
 
         public string RepositoryConfig { get; private set; }
 
-        public IPackage AddPackage(IPackage package) {
+        public Package AddPackage(Package package) {
             if (package == null) { throw new ArgumentNullException("package"); }
 
-            var result = this.PackagesCollection.Insert<IPackage>(package);
+            var result = this.PackagesCollection.Insert<Package>(package);
 
             return package;
         }
 
-        public IQueryable<IPackage> GetPackages() {
+        public IQueryable<Package> GetPackages() {
             // for now this just returns all packages but this should not be the case
-            return this.PackagesCollection.FindAllAs<IPackage>().AsQueryable();
+            return this.PackagesCollection.FindAllAs<Package>().AsQueryable();
         }
+
+        
 
 
         protected MongoServer GetServer() {
             return this.Server;
         }
+
         protected MongoDatabase GetDatabase() {
             return this.Database;
         }
+
         protected MongoCollection PackagesCollection {
             get {
                 return this.GetDatabase().GetCollection(CommonStrings.Database.CollectionName);

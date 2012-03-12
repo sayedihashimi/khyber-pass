@@ -29,8 +29,8 @@
         /// Adds the given package to the repository
         /// </summary>
         /// <param name="package"></param>
-        IPackage AddPackage(IPackage package);
+        Package AddPackage(Package package);
 
-        IQueryable<IPackage> GetPackages();
+        IQueryable<Package> GetPackages();
     }
 }

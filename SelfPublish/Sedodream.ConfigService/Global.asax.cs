@@ -10,20 +10,16 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace Sedodream.SelfPub.ConfigService
-{
+namespace Sedodream.SelfPub.ConfigService {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class WebApiApplication : System.Web.HttpApplication
-    {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
+    public class WebApiApplication : System.Web.HttpApplication {
+        public static void RegisterGlobalFilters(GlobalFilterCollection filters) {
             filters.Add(new HandleErrorAttribute());
         }
 
-        public static void RegisterRoutes(RouteCollection routes)
-        {
+        public static void RegisterRoutes(RouteCollection routes) {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapHttpRoute(
@@ -39,9 +35,12 @@ namespace Sedodream.SelfPub.ConfigService
             );
         }
 
-        protected void Application_Start()
-        {
+        protected void Application_Start() {
+            this.RegisterDependencies();
+
             AreaRegistration.RegisterAllAreas();
+
+            
 
             // Use LocalDB for Entity Framework by default
             Database.DefaultConnectionFactory = new SqlConnectionFactory("Data Source=(localdb)\v11.0; Integrated Security=True; MultipleActiveResultSets=True");
@@ -50,6 +49,17 @@ namespace Sedodream.SelfPub.ConfigService
             RegisterRoutes(RouteTable.Routes);
 
             BundleTable.Bundles.RegisterTemplateBundles();
+
+            // this is for ASP.NET MVC
+            //ControllerBuilder.Current.SetControllerFactory(typeof(CustomControllerFactory));
+        }
+
+        protected void RegisterDependencies() {            
+            // this is for ASP.NET MVC
+            DependencyResolver.SetResolver(new CustomDeendencyResolver());
+
+            // this is for Web API
+            GlobalConfiguration.Configuration.ServiceResolver.SetResolver(new CustomDeendencyResolver());
         }
     }
 }
