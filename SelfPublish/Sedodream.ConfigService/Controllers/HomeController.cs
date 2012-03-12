@@ -26,5 +26,20 @@
 
             return View(hpm);
         }
+
+        public ActionResult AddPackage() {
+            return View(new Package());
+        }
+
+        [HttpPost]
+        public ActionResult AddPackage(Package package) {
+            if (package == null) { throw new ArgumentNullException("package"); }
+
+            ValidateModel(package);
+
+            this.PackageRepository.AddPackage(package);
+
+            return RedirectToAction("Index");
+        }
     }
 }

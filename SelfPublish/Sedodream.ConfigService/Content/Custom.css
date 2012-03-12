@@ -1,0 +1,23 @@
+﻿body
+{
+    padding-left: 15px;
+    background-color: #e2e2e2;
+}
+ul.input
+{
+    list-style: none;
+}
+    ul.input li input
+    {
+        width: 200px;
+    }
+    ul.input li
+    {
+        margin: 5px;
+    }
+ul li.heading
+{
+    font-weight: bold;
+    font-size: 12pt;
+    
+}

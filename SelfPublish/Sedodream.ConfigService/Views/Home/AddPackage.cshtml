@@ -1,0 +1,29 @@
+﻿@model Sedodream.SelfPub.Common.Package
+
+@{
+    ViewBag.Title = "AddPackage";
+}
+
+<h2>Add Package</h2>
+
+@if (this.TempData["message"] != null) {
+    <h1>@this.TempData["message"]</h1>
+}
+
+@using(Html.BeginForm()){
+    <ul class="input">
+        <li class="heading">Name</li>
+        <li>@Html.TextBoxFor(model=>model.Name)</li>
+
+        <li class="heading">Version</li>
+        <li>@Html.TextBoxFor(model=>model.Version)</li>
+
+        <li class="heading">Package location</li>
+        <li>@Html.TextBoxFor(model=>model.PackageLocation)</li>
+
+        <li class="heading">Package Manifest</li>
+        <li>@Html.TextAreaFor(model=>model.PackageManifest,new {rows="20",cols="100"})</li>
+        
+    </ul>
+    <input type="submit" id="AddPackage" value="Add package" />
+}
