@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
@@ -13,6 +14,13 @@ namespace Sedodream.SelfPub.ConfigService.Controllers {
         /// </summary>
         /// <param name="jsonPackage">This object will be converted to an IPackage object</param>
         public void PostPackage(string jsonPackage) {
+            if (string.IsNullOrEmpty(jsonPackage)) { throw new HttpResponseException("jsonPackage parameter cannot be null", HttpStatusCode.BadRequest); }
+
+            // we need to convert this to an IPackage
+
+
+
+
             throw new NotImplementedException();
         }
         #endregion
@@ -26,7 +34,7 @@ namespace Sedodream.SelfPub.ConfigService.Controllers {
                     Message = "bar string Here",
                     Time = DateTime.Now,
                     InnerBar = new {
-                        IIB = "string here"
+                        IIB = "string here",
                         ObjHere = new {
                             SampleStr = "sample string here",
                             SomeInt = 1
