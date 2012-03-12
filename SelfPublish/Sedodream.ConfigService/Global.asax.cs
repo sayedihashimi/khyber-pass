@@ -62,4 +62,5 @@ namespace Sedodream.SelfPub.ConfigService {
             GlobalConfiguration.Configuration.ServiceResolver.SetResolver(new CustomDeendencyResolver());
         }
     }
+
 }

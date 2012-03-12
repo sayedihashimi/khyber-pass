@@ -6,13 +6,16 @@ using System.Linq;
 using System.Text;
 
     public class Package {
+        public Package() {
+            this.Tags = new List<string>();
+        }
+
         public MongoDB.Bson.ObjectId Id { get; set; }
         /// <summary>
         /// The name of the pacakge
         /// </summary>
         // [Required]
         public string Name { get; set; }
-
         /// <summary>
         /// A string representing where the package is located. This is typically a URI.<br/>
         /// Since this is a URI it also describes the protocol which is needed to download the package.
@@ -29,5 +32,9 @@ using System.Text;
         /// </summary>
         // [Required]
         public string Version { get; set; }
+        /// <summary>
+        /// An optional set of tags.
+        /// </summary>
+        public List<string> Tags { get; set; }
     }
 }

@@ -21,3 +21,6 @@ ul li.heading
     font-size: 12pt;
     
 }
+p.note {
+    text-decoration: initial;  
+}
