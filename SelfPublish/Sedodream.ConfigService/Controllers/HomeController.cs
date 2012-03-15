@@ -22,8 +22,6 @@
             IList<Package> packages = (from p in this.PackageRepository.GetPackages()
                                        select p).ToList();
 
-
-
             // TODO: Use automapper for this instead
             HomePageModel hpm = new HomePageModel(packages);
 

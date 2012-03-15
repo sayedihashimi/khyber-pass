@@ -35,6 +35,7 @@
             IList<PackagePageModel> packageModelList = ObjectMapper.Instance.Map<IList<Package>,IList<PackagePageModel>>(packages);
 
             Assert.IsNotNull(packageModelList);
+            Assert.AreEqual(packages.Count, packageModelList.Count);
             for (int i = 0; i < packages.Count; i++) {
                 CustomAssert.AreEqual(packages[i], packageModelList[i]);
             }
