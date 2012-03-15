@@ -7,6 +7,7 @@
     using System.Linq;
     using MongoDB.Driver;
     using System.Diagnostics;
+    using Sedodream.SelfPub.Test.Helpers;
 
     [TestClass]
     public class MongoPackageRepositoryTest {
@@ -44,11 +45,7 @@
         [TestMethod]
         public void TestInsert() {            
             Guid guid = Guid.NewGuid();
-            Package package = new Package {
-                Name = guid.ToString(),
-                PackageLocation = new Uri(Path.Combine(@"C:\temp\", guid.ToString())),
-                PackageManifest = "some string"
-            };
+            Package package = RandomDataHelper.Instance.CreateRandomePackage();
 
             string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
 

@@ -61,6 +61,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CommonTestStrings.cs" />
+    <Compile Include="CustomAssert.cs" />
     <Compile Include="Helpers\RandomPrimitives.cs" />
     <Compile Include="MongoPackageRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

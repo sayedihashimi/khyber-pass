@@ -14,19 +14,6 @@
     public class TestObjectMapper {
         [TestMethod]
         public void Test_Package_ToPackagePageModel_Default() {
-            //Package package = new Package {
-            //    Id = ObjectId.GenerateNewId(),
-            //    Name = Guid.NewGuid().ToString(),
-            //    PackageLocation = new Uri(Path.Combine(@"C:\temp", Guid.NewGuid().ToString())),
-            //    PackageManifest = Guid.NewGuid().ToString(),
-            //    Version = Guid.NewGuid().ToString()
-            //};
-
-            //int numTags = new Random().Next(10);
-            //for (int i = 0; i < numTags; i++) {
-            //    package.Tags.Add(Guid.NewGuid().ToString());
-            //}
-
             Package package = RandomDataHelper.Instance.CreateRandomePackage();
 
             PackagePageModel pageModel = ObjectMapper.Instance.Map<Package, PackagePageModel>(package);
@@ -44,10 +31,13 @@
 
         [TestMethod]
         public void Test_AddPackagePageModel_Constructor_Default() {
-            IList<Package> packages = new List<Package>();
+            IList<Package> packages = RandomDataHelper.Instance.CreateRandomListOf<Package>(() => RandomDataHelper.Instance.CreateRandomePackage(), 10);
+            IList<PackagePageModel> packageModelList = ObjectMapper.Instance.Map<IList<Package>,IList<PackagePageModel>>(packages);
+
+            Assert.IsNotNull(packageModelList);
+            for (int i = 0; i < packages.Count; i++) {
+                CustomAssert.AreEqual(packages[i], packageModelList[i]);
+            }
         }
-
-        
-
     }
 }

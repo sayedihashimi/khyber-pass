@@ -13,6 +13,7 @@
         public string PackageLocation { get; set; }
         public string PackageManifest { get; set; }
         public string Tags { get; set; }
+        public string Version { get; set; }
     }
 
     public class AddPackagePageModel {
