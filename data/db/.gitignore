@@ -1,0 +1,8 @@
+# Folders to ignore #
+journal/
+
+# Known files to ignore always #
+mongod.lock
+self-publish*
+*.0
+*.ms

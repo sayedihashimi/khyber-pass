@@ -5,6 +5,7 @@
     using System.Web;
     using System.Web.Mvc;
     using Sedodream.SelfPub.Common;
+    using Sedodream.SelfPub.ConfigService.Models;
     using Sedodream.SelfPub.ConfigService.Models.PageModels;
 
     public class HomeController : Controller {
@@ -21,8 +22,12 @@
             IList<Package> packages = (from p in this.PackageRepository.GetPackages()
                                        select p).ToList();
 
+
+
             // TODO: Use automapper for this instead
             HomePageModel hpm = new HomePageModel(packages);
+
+            
 
             return View(hpm);
         }

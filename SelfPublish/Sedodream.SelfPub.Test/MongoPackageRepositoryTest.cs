@@ -19,7 +19,7 @@
             var mongodbexe = mongoDbDir.GetFiles("mongod.exe").Single();
 
             DirectoryInfo testCtxDirectory = new DirectoryInfo(testContext.TestDir);
-            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(@"data\db");
+            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(ConfigurationManager.AppSettings[CommonTestStrings.MongodbDir]);
 
             string args = string.Format(@"--dbpath ""{0}""",dataDbDir.FullName);
             var psi = new ProcessStartInfo {

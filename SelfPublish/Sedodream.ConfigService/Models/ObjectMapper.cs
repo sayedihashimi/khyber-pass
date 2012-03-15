@@ -41,7 +41,7 @@
         }
 
         private void MapPackage() {
-            Mapper.CreateMap<Package, AddPackagePageModel>()
+            Mapper.CreateMap<Package, PackagePageModel>()
                 .ForMember(appm => appm.Tags, opt => opt.ResolveUsing(new TagCollectionFlattner()).FromMember(t => t.Tags));
         }
 

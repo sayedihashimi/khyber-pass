@@ -1,4 +1,4 @@
-﻿namespace Sedodream.SelfPub.Test {
+﻿namespace Sedodream.SelfPub.Test.Helpers {
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -13,21 +13,23 @@
     [TestClass]
     public class TestObjectMapper {
         [TestMethod]
-        public void Test_PackageToAddPackagePageModel_Default() {
-            Package package = new Package {
-                Id = ObjectId.GenerateNewId(),
-                Name = Guid.NewGuid().ToString(),
-                PackageLocation = new Uri(Path.Combine(@"C:\temp", Guid.NewGuid().ToString())),
-                PackageManifest = Guid.NewGuid().ToString(),
-                Version = Guid.NewGuid().ToString()
-            };
+        public void Test_Package_ToPackagePageModel_Default() {
+            //Package package = new Package {
+            //    Id = ObjectId.GenerateNewId(),
+            //    Name = Guid.NewGuid().ToString(),
+            //    PackageLocation = new Uri(Path.Combine(@"C:\temp", Guid.NewGuid().ToString())),
+            //    PackageManifest = Guid.NewGuid().ToString(),
+            //    Version = Guid.NewGuid().ToString()
+            //};
 
-            int numTags = new Random().Next(10);
-            for (int i = 0; i < numTags; i++) {
-                package.Tags.Add(Guid.NewGuid().ToString());
-            }
+            //int numTags = new Random().Next(10);
+            //for (int i = 0; i < numTags; i++) {
+            //    package.Tags.Add(Guid.NewGuid().ToString());
+            //}
 
-            AddPackagePageModel pageModel = ObjectMapper.Instance.Map<Package, AddPackagePageModel>(package);
+            Package package = RandomDataHelper.Instance.CreateRandomePackage();
+
+            PackagePageModel pageModel = ObjectMapper.Instance.Map<Package, PackagePageModel>(package);
 
             Assert.IsNotNull(pageModel);
             Assert.AreEqual(package.Id, pageModel.Id);
@@ -39,5 +41,13 @@
                 Assert.IsTrue(pageModel.Tags.Contains(tag));
             }
         }
+
+        [TestMethod]
+        public void Test_AddPackagePageModel_Constructor_Default() {
+            IList<Package> packages = new List<Package>();
+        }
+
+        
+
     }
 }

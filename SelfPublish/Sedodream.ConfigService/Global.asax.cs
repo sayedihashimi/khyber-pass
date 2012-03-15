@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Sedodream.SelfPub.ConfigService.Models;
 
 namespace Sedodream.SelfPub.ConfigService {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
@@ -40,18 +41,13 @@ namespace Sedodream.SelfPub.ConfigService {
 
             AreaRegistration.RegisterAllAreas();
 
-            
-
             // Use LocalDB for Entity Framework by default
-            Database.DefaultConnectionFactory = new SqlConnectionFactory("Data Source=(localdb)\v11.0; Integrated Security=True; MultipleActiveResultSets=True");
+            Database.DefaultConnectionFactory = new SqlConnectionFactory(@"Data Source=(localdb)\v11.0; Integrated Security=True; MultipleActiveResultSets=True");
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
             BundleTable.Bundles.RegisterTemplateBundles();
-
-            // this is for ASP.NET MVC
-            //ControllerBuilder.Current.SetControllerFactory(typeof(CustomControllerFactory));
         }
 
         protected void RegisterDependencies() {            
