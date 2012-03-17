@@ -47,7 +47,15 @@
             return this.PackagesCollection.FindAllAs<Package>().AsQueryable();
         }
 
-        
+        public IQueryable<Package> GetPackagesByTag(string tag) {
+            if (string.IsNullOrEmpty(tag)) { throw new ArgumentNullException("tag"); }
+
+            var result = from p in this.PackagesCollection.FindAllAs<Package>()
+                         where p.Tags.Contains(tag)
+                         select p;
+
+            return result.AsQueryable();
+        }
 
 
         protected MongoServer GetServer() {

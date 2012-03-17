@@ -8,7 +8,6 @@
     using Sedodream.SelfPub.Common;
 
     public class ConfigController : ApiController {
-
         protected IPackageRepository PackageRepository { get; set; }
         protected IJsonSearlizer JsonSearlizer { get; set; }
 
@@ -31,6 +30,24 @@
 
             // add the package to the repositry
             this.PackageRepository.AddPackage(pkg);
+        }
+
+        public string Get() {
+            return "defualt result here";
+        }
+
+
+        // Sample OData queries that callers can use here
+        //  http://localhost:12914/api/config/allPackages?$filter=startswith(Name,'PkgN')
+        //  http://localhost:12914/api/config/allPackages?$filter=(Name eq 'PkgName')
+        public IQueryable<Package> GetAllPackages() {
+            return this.PackageRepository.GetPackages();
+        }
+
+        public IQueryable<Package> GetPackagesByTag(string tag) {
+            if (string.IsNullOrWhiteSpace(tag)) { throw new ArgumentNullException("tag"); }
+
+            return this.PackageRepository.GetPackagesByTag(tag);
         }
 
         public IQueryable<Package> GetFoo() {

@@ -23,11 +23,7 @@ namespace Sedodream.SelfPub.ConfigService {
         public static void RegisterRoutes(RouteCollection routes) {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            RegisterWebApiRoutes(routes);
 
             routes.MapRoute(
                 name: "Default",
@@ -56,6 +52,33 @@ namespace Sedodream.SelfPub.ConfigService {
 
             // this is for Web API
             GlobalConfiguration.Configuration.ServiceResolver.SetResolver(new CustomDeendencyResolver());
+        }
+
+        protected static void RegisterWebApiRoutes(RouteCollection routes) {
+            if (routes == null) { throw new ArgumentNullException("routes"); }
+
+            // http://localhost:12914/api/Config
+
+            routes.MapHttpRoute(
+                name: "allPackages",
+                routeTemplate: "api/config/packages",
+                defaults: new { controller = "Config", action = "GetAllPackages" });
+
+            routes.MapHttpRoute(
+                name: "GetPackagesByTag",
+                routeTemplate: "api/config/packages/tag/{tag}",
+                defaults: new { controller = "Config", action = "GetPackagesByTag" });
+
+            routes.MapHttpRoute(
+                name: "foo",
+                routeTemplate: "api/config",
+                defaults: new { controller = "Config", action = "Get" });
+
+            routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 

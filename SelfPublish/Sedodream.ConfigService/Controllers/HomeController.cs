@@ -38,10 +38,17 @@
 
             ValidateModel(package);
 
-            Package actualPacakge = ObjectMapper.Instance.Map<PackagePageModel, Package>(package);
-            this.PackageRepository.AddPackage(actualPacakge);
+            if (ModelState.IsValid) {
 
-            return RedirectToAction("Index");
+                Package actualPacakge = ObjectMapper.Instance.Map<PackagePageModel, Package>(package);
+                this.PackageRepository.AddPackage(actualPacakge);
+
+                return RedirectToAction("Index");
+            }
+            else {
+                // TODO: Add error details here
+                return View(package);
+            }
         }
     }
 }

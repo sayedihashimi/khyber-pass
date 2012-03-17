@@ -25,12 +25,19 @@
         /// An optional JSON string containng any additional info that clients would need to interact with this repository.
         /// </summary>
         string RepositoryConfig { get; }
+        
         /// <summary>
         /// Adds the given package to the repository
         /// </summary>
         /// <param name="package"></param>
         Package AddPackage(Package package);
-
+        
+        /// <summary>
+        /// Gets an IQueryable for all packages
+        /// </summary>
+        /// <returns></returns>
         IQueryable<Package> GetPackages();
+
+        IQueryable<Package> GetPackagesByTag(string tag);
     }
 }
