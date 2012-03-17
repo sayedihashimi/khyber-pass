@@ -11,5 +11,9 @@
             public static string CollectionName = "packages";
         }
 
+        public static class Deployer {
+            public static string ConfigServiceBaseUrl = "configServiceBaseUrl";
+            public static string PackageNameToDeploy = "packageNameToDeploy";
+        }
     }
 }

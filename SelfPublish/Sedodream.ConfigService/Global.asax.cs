@@ -70,9 +70,14 @@ namespace Sedodream.SelfPub.ConfigService {
                 defaults: new { controller = "Config", action = "GetPackagesByTag" });
 
             routes.MapHttpRoute(
-                name: "foo",
-                routeTemplate: "api/config",
-                defaults: new { controller = "Config", action = "Get" });
+                name: "GetPackagesByName",
+                routeTemplate: "api/config/packages/name/{name}",
+                defaults: new { controller = "Config", action = "GetPackagesByName" });
+
+            routes.MapHttpRoute(
+                name: "GetLatestPackageByName",
+                routeTemplate: "api/config/packages/latest/{name}",
+                defaults: new { controller = "Config", action = "GetLatestPackageByName" });
 
             routes.MapHttpRoute(
                 name: "DefaultApi",

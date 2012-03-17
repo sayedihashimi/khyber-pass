@@ -39,5 +39,9 @@
         IQueryable<Package> GetPackages();
 
         IQueryable<Package> GetPackagesByTag(string tag);
+
+        IQueryable<Package> GetPackagesByName(string name);
+
+        Package GetLatestPackageByName(string name);
     }
 }

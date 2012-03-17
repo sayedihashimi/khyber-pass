@@ -50,54 +50,16 @@
             return this.PackageRepository.GetPackagesByTag(tag);
         }
 
-        public IQueryable<Package> GetFoo() {
-            // TODO: For now this returns all packages but this should be filtered
+        public IQueryable<Package> GetPackagesByName(string name) {
+            if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
 
-            return this.PackageRepository.GetPackages();
+            return this.PackageRepository.GetPackagesByName(name);
         }
 
-        //public IEnumerable<IPackage> GetAllPacakges() {
-        //    // TODO: For now this returns all packages but this should be filtered
-        //    var result = from p in this.PackageRepository.GetPackages()
-        //                 select p;
-
-        //    return result;
-        //}
-        
-        //public string GetInfo() {
-        //    return DateTime.UtcNow.ToString();
-        //}
-
-
-
-        public string GetPublisherConfig(string publisherName) {
-            //if (string.IsNullOrEmpty(publisherName)) {
-            //    throw new HttpResponseException(System.Net.HttpStatusCode.BadRequest,
-            //}
-            throw new NotImplementedException();
+        public Package GetLatestPackageByName(string name) {
+            return this.PackageRepository.GetLatestPackageByName(name);
         }
 
 
-        //// GET /api/values
-        //public IEnumerable<string> Get() {
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET /api/values/5
-        //public string Get(int id) {
-        //    return "value";
-        //}
-
-        //// POST /api/values
-        //public void Post(string value) {
-        //}
-
-        //// PUT /api/values/5
-        //public void Put(int id, string value) {
-        //}
-
-        //// DELETE /api/values/5
-        //public void Delete(int id) {
-        //}
     }
 }

@@ -37,6 +37,8 @@
         public Package AddPackage(Package package) {
             if (package == null) { throw new ArgumentNullException("package"); }
 
+            package.DateCreated = DateTime.Now;
+
             var result = this.PackagesCollection.Insert<Package>(package);
 
             return package;
@@ -57,7 +59,27 @@
             return result.AsQueryable();
         }
 
+        public IQueryable<Package> GetPackagesByName(string name) {
+            if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
 
+            var result = from p in this.PackagesCollection.FindAllAs<Package>()
+                         where string.Compare(name, p.Name, StringComparison.OrdinalIgnoreCase) == 0
+                         select p;
+
+            return result.AsQueryable();
+        }
+
+        public Package GetLatestPackageByName(string name) {
+            if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
+
+            var result = from p in this.GetPackagesByName(name)
+                         orderby p.DateCreated descending
+                         select p;
+
+            return result.FirstOrDefault();
+        }
+
+        #region protected/private items
         protected MongoServer GetServer() {
             return this.Server;
         }
@@ -71,12 +93,13 @@
                 return this.GetDatabase().GetCollection(CommonStrings.Database.CollectionName);
             }
         }
-
+        
         /// <summary>
         /// Should only be used by unit tests
         /// </summary>
         internal void Reset() {
             this.PackagesCollection.Drop();
         }
+        #endregion
     }
 }
