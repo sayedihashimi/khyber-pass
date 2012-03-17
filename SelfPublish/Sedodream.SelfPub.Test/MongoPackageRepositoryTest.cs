@@ -22,7 +22,10 @@
             DirectoryInfo testCtxDirectory = new DirectoryInfo(testContext.TestDir);
             DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(ConfigurationManager.AppSettings[CommonTestStrings.MongodbDir]);
 
-            string args = string.Format(@"--dbpath ""{0}""",dataDbDir.FullName);
+            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
+            string args = string.Format(@"--dbpath ""{0}"" --port {1}", dataDbDir.FullName, mub.Server.Port);
+
             var psi = new ProcessStartInfo {
                 FileName = mongodbexe.FullName,
                 WorkingDirectory = testCtxDirectory.FullName,
