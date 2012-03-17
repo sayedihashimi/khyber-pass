@@ -148,7 +148,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ObjectMapper.cs" />
-    <Compile Include="Models\PageModels\AddPackagePageModel.cs" />
+    <Compile Include="Models\PageModels\PackageListPageModel.cs" />
     <Compile Include="Models\PageModels\HomePageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
