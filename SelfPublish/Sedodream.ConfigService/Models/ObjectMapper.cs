@@ -43,6 +43,9 @@
         private void MapPackage() {
             Mapper.CreateMap<Package, PackagePageModel>()
                 .ForMember(appm => appm.Tags, opt => opt.ResolveUsing(new TagCollectionFlattner()).FromMember(t => t.Tags));
+
+            Mapper.CreateMap<PackagePageModel, Package>()
+                .ForMember(pkg => pkg.Tags, opt => opt.ResolveUsing(new TagCollectionExpander()).FromMember(t => t.Tags));
         }
 
     
@@ -94,4 +97,17 @@
             return sb.ToString();
         }
     }
+
+    public class TagCollectionExpander : ValueResolver<string, List<string>> {
+        protected override List<string> ResolveCore(string tagString) {
+            List<string> result = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(tagString)) {
+                result = tagString.Split(' ').ToList();
+            }
+
+            return result;
+        }
+    }
+
 }

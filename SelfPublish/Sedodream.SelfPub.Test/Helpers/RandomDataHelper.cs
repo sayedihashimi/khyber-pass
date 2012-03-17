@@ -6,6 +6,8 @@
     using System.Text;
     using MongoDB.Bson;
     using Sedodream.SelfPub.Common;
+    using Sedodream.SelfPub.ConfigService.Models;
+    using Sedodream.SelfPub.ConfigService.Models.PageModels;
 
     public class RandomDataHelper {
         private static RandomDataHelper instance = new RandomDataHelper();
@@ -35,6 +37,13 @@
             }
 
             return package;
+        }
+
+        public PackagePageModel CreateRandomPackagePageModel() {
+            // this is kind of cheating but it works
+            PackagePageModel ppm = ObjectMapper.Instance.Map<Package, PackagePageModel>(this.CreateRandomePackage());
+
+            return ppm;
         }
 
         public IList<T> CreateRandomListOf<T>(Func<T> creator, int maxNumElements) {

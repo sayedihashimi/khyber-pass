@@ -25,22 +25,21 @@
             // TODO: Use automapper for this instead
             HomePageModel hpm = new HomePageModel(packages);
 
-            
-
             return View(hpm);
         }
 
         public ActionResult AddPackage() {
-            return View(new Package());
+            return View(ObjectMapper.Instance.Map<Package, PackagePageModel>(new Package()));
         }
 
         [HttpPost]
-        public ActionResult AddPackage(Package package) {
+        public ActionResult AddPackage(PackagePageModel package) {
             if (package == null) { throw new ArgumentNullException("package"); }
 
             ValidateModel(package);
 
-            this.PackageRepository.AddPackage(package);
+            Package actualPacakge = ObjectMapper.Instance.Map<PackagePageModel, Package>(package);
+            this.PackageRepository.AddPackage(actualPacakge);
 
             return RedirectToAction("Index");
         }

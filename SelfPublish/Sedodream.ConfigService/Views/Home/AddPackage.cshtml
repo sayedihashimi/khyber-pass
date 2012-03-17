@@ -1,4 +1,4 @@
-﻿@model Sedodream.SelfPub.Common.Package
+﻿@model Sedodream.SelfPub.ConfigService.Models.PageModels.PackagePageModel
 
 @{
     ViewBag.Title = "AddPackage";
@@ -22,7 +22,7 @@
         <li>@Html.TextBoxFor(model=>model.PackageLocation)</li>
 
         <li class="heading">Tags <p class="note">(seperated by a space)</p></li>
-        <li></li>
+        <li>@Html.TextBoxFor(model=>model.Tags)</li>
 
         <li class="heading">Package Manifest</li>
         <li>@Html.TextAreaFor(model=>model.PackageManifest,new {rows="20",cols="100"})</li>

@@ -40,5 +40,17 @@
                 CustomAssert.AreEqual(packages[i], packageModelList[i]);
             }
         }
+
+        [TestMethod]
+        public void Test_PackagePageModel_ToPacakge_Default(){
+            PackagePageModel ppm = RandomDataHelper.Instance.CreateRandomPackagePageModel();
+            Package package = ObjectMapper.Instance.Map<PackagePageModel,Package>(ppm);
+
+            Assert.IsNotNull(ppm.Tags);
+            Assert.IsTrue(ppm.Tags.Length > 1);
+            Assert.IsNotNull(package);
+            CustomAssert.AreEqual(package, ppm);
+        }
+
     }
 }
