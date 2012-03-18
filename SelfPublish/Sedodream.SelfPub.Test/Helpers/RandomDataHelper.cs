@@ -1,13 +1,14 @@
 ﻿namespace Sedodream.SelfPub.Test.Helpers {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using MongoDB.Bson;
-    using Sedodream.SelfPub.Common;
-    using Sedodream.SelfPub.ConfigService.Models;
-    using Sedodream.SelfPub.ConfigService.Models.PageModels;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using MongoDB.Bson;
+using Sedodream.SelfPub.Common;
+using Sedodream.SelfPub.Common.Deploy;
+using Sedodream.SelfPub.ConfigService.Models;
+using Sedodream.SelfPub.ConfigService.Models.PageModels;
 
     public class RandomDataHelper {
         private static RandomDataHelper instance = new RandomDataHelper();
@@ -44,6 +45,18 @@
             PackagePageModel ppm = ObjectMapper.Instance.Map<Package, PackagePageModel>(this.CreateRandomePackage());
 
             return ppm;
+        }
+
+        public MSDeployDeploymentParameters CreateRandomMSDeployDeploymentParameters() {
+            MSDeployDeploymentParameters result = new MSDeployDeploymentParameters();
+
+            for (int i = 0; i < this.Primitives.GetRandomInt(10); i++) {               
+                result.Parameters.Add(
+                    RandomDataHelper.Instance.Primitives.GetRandomString(20),
+                    RandomDataHelper.instance.Primitives.GetRandomString(20));
+            }
+
+            return result;
         }
 
         public IList<T> CreateRandomListOf<T>(Func<T> creator, int maxNumElements) {

@@ -6,6 +6,7 @@
     using System.Diagnostics;
 
     public class RandomPrimitives {
+        RandomStringGenerator StringGenerator = new RandomStringGenerator();
 
         public TList CreateRandomListOf<TElement, TList>(Func<TElement> elementCreator, int maxNumElements, Func<TList> listCreator)
             where TList : ICollection<TElement> {
@@ -59,15 +60,18 @@
 
         public string GetRandomString(int maxLength) {
             int length = this.GetRandomInt(maxLength);
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random(DateTime.Now.Millisecond);
-            char ch;
-            for (int i = 0; i < length; i++) {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
+            return StringGenerator.NextString(length);
 
-            return builder.ToString();
+            //int length = this.GetRandomInt(maxLength);
+            //StringBuilder builder = new StringBuilder();
+            //Random random = new Random(DateTime.Now.Millisecond);
+            //char ch;
+            //for (int i = 0; i < length; i++) {
+            //    ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+            //    builder.Append(ch);
+            //}
+
+            //return builder.ToString();
         }
 
         public string GetRandomEmail(int maxLength) {

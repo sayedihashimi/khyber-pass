@@ -18,9 +18,14 @@ ul.input
 ul li.heading
 {
     font-weight: bold;
-    font-size: 12pt;
-    
+    font-size: 12pt;    
 }
+
+ul li select
+{
+    width: 200px;
+}
+
 p.note {
     text-decoration: initial;  
 }

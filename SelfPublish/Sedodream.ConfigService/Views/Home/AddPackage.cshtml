@@ -12,6 +12,10 @@
 
 @using(Html.BeginForm()){
     <ul class="input">
+        <li class="heading">Package type</li>
+        <li>
+            @Html.DropDownListFor(pkg=>pkg.PackageType, Model.AvailablePackageTypes)
+        </li>
         <li class="heading">Name</li>
         <li>@Html.TextBoxFor(model=>model.Name)</li>
 
@@ -25,7 +29,7 @@
         <li>@Html.TextBoxFor(model=>model.Tags)</li>
 
         <li class="heading">Package Manifest</li>
-        <li>@Html.TextAreaFor(model=>model.PackageManifest,new {rows="20",cols="100"})</li>
+        <li>@Html.TextAreaFor(model=>model.PackageManifest,new {rows="20",cols="80"})</li>
         
     </ul>
     <input type="submit" id="AddPackage" value="Add package" />

@@ -29,7 +29,7 @@
         public T Desearlize<T>(string objString) {
             if (string.IsNullOrEmpty(objString)) { throw new ArgumentNullException("objString"); }
 
-            throw new NotImplementedException();
+            return JsonConvert.DeserializeObject<T>(objString);           
         }
     }
 }

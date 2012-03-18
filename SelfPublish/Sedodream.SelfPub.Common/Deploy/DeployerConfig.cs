@@ -13,6 +13,7 @@
             DeployerConfig result = new DeployerConfig {
                 GetConfigServiceBaseUrl = new Uri(ConfigurationManager.AppSettings[CommonStrings.Deployer.ConfigServiceBaseUrl]),
                 PackageNameToDeploy = ConfigurationManager.AppSettings[CommonStrings.Deployer.PackageNameToDeploy],
+                DeploymentParameters = ConfigurationManager.AppSettings[CommonStrings.Deployer.DeployParameters],
             };
             
             return result;
@@ -29,5 +30,12 @@
         /// more than 1 deployer.
         /// </summary>
         public string PackageNameToDeploy { get; set; }
+
+        /// <summary>
+        /// This is a JSON string which is passed to <c>IDeployHandler</c> to process the deploy.
+        /// This will contain any environment specific options. For example in the MSDeploy case it
+        /// will have all the MSDeploy parameter values.
+        /// </summary>
+        public string DeploymentParameters { get; set; }
     }
 }

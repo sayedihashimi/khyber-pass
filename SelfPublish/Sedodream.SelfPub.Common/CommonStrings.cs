@@ -14,6 +14,7 @@
         public static class Deployer {
             public static string ConfigServiceBaseUrl = "configServiceBaseUrl";
             public static string PackageNameToDeploy = "packageNameToDeploy";
+            public static string DeployParameters = "deployParameters";
         }
     }
 }

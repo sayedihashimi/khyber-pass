@@ -7,6 +7,8 @@ using System.Text;
 
     public class Package {
         public Package() {
+            // this is the default package type
+            this.PackageType = KnownPackageTypes.msdeploy.ToString();
             this.Tags = new List<string>();
         }
 
@@ -16,6 +18,15 @@ using System.Text;
         /// This will get automatically set when the package is inserted.
         /// </summary>
         public DateTime DateCreated { get; set; }
+
+        /// <summary>
+        /// Indicates what kind of package this is. For example:<br/>
+        ///     msdeploy
+        ///     git
+        ///     tfs
+        ///     fileSystem
+        /// </summary>
+        public string PackageType { get; set; }
 
         /// <summary>
         /// The name of the pacakge

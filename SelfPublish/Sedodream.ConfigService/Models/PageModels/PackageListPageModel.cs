@@ -3,18 +3,33 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Web;
+    using System.Web.Mvc;
     using MongoDB.Bson;
     using Sedodream.SelfPub.Common;
 
     public class PackagePageModel {
-        
+        public PackagePageModel() {
+            IList<SelectListItem> availableItems = new List<SelectListItem>();
+            Enum.GetNames(typeof(KnownPackageTypes)).ToList().ForEach(name => {
+                SelectListItem item = new SelectListItem {
+                    Text = name,
+                    Value = name,
+                };
+                availableItems.Add(item);
+
+                this.AvailablePackageTypes = availableItems;
+            });
+        }
+
         public ObjectId Id { get; set; }
         public string Name { get; set; }
         public string PackageLocation { get; set; }
         public string PackageManifest { get; set; }
         public string Tags { get; set; }
         public string Version { get; set; }
+        public string PackageType { get; set; }
 
+        public IEnumerable<SelectListItem> AvailablePackageTypes { get; set; }
     }
 
     public class PackageListPageModel {

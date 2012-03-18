@@ -27,7 +27,7 @@
         <section class="content-wrapper main-content clear-fix">
             <ol class="round">
                 @foreach (Sedodream.SelfPub.Common.Package package in Model.Packages) {
-                    <li><h5>@package.Name - @package.PackageLocation - @package.DateCreated.ToString("MM/dd/yyyy hh:mm:ss")</h5></li>
+                    <li><h5>@package.Name - @package.PackageLocation - @package.DateCreated.ToString("MM/dd/yyyy hh:mm:ss") -  @package.PackageType</h5></li>
                 }
             </ol>
         </section>

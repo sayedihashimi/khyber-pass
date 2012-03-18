@@ -11,7 +11,7 @@
 
     [TestClass]
     public class MongoPackageRepositoryTest {
-        private static Process mongoDbProjcess;
+        private static Process mongoDbProcess;
 
         [ClassInitialize]
         public static void Initalize(TestContext testContext) {
@@ -29,19 +29,22 @@
             var psi = new ProcessStartInfo {
                 FileName = mongodbexe.FullName,
                 WorkingDirectory = testCtxDirectory.FullName,
-                Arguments = args
+                Arguments = args,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
-            mongoDbProjcess = Process.Start(psi);
+            mongoDbProcess = Process.Start(psi);
         }
 
         [ClassCleanup]
         public static void Cleanup() {
             // we have to stop mongo DB
-            mongoDbProjcess.CloseMainWindow();
-            mongoDbProjcess.WaitForExit(5 * 1000);
-            if (!mongoDbProjcess.HasExited) {
-                mongoDbProjcess.Kill();
+            mongoDbProcess.CloseMainWindow();
+            mongoDbProcess.WaitForExit(5 * 1000);
+            if (!mongoDbProcess.HasExited) {
+                mongoDbProcess.Kill();
             }
         }
 

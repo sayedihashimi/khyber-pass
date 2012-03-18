@@ -5,10 +5,17 @@
     using System.Text;
 
     public enum KnownPackageTypes {
-        MSDeployPackage
+        msdeploy,
+        tfs,
+        git,
+        fileSystem
     }
 
     public enum KnownRepositorTypes {
         MonogDb
+    }
+
+    public enum KnownUriSchemeTypes {
+        file,        
     }
 }
