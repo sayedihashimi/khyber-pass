@@ -15,6 +15,7 @@
             public static string ConfigServiceBaseUrl = "configServiceBaseUrl";
             public static string PackageNameToDeploy = "packageNameToDeploy";
             public static string DeployParameters = "deployParameters";
+            public static string MsdeployTimeout = "msdeployTimeout";
         }
     }
 }

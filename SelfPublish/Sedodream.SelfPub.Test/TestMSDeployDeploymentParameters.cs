@@ -20,6 +20,7 @@
 
             string msdeployDeployParametersString =
 string.Format(@"{{
+    ""MsdeployTimeout"":""10000"",
 	""Parameters"" : {{
 		""{0}"" : ""{1}""
 	}}
@@ -29,6 +30,8 @@ string.Format(@"{{
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Parameters);
             Assert.AreEqual(1, result.Parameters.Count);
+
+            Assert.AreEqual(10000, result.MsdeployTimeout);
         }
 
         [TestMethod]

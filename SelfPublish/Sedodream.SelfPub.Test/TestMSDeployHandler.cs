@@ -45,13 +45,6 @@
 
             IEnumerable attributes = document.XPathEvaluate(xpath) as IEnumerable;
             return attributes.Cast<XAttribute>().Single().Value;
-
-            //var result = (from r in document.XPathEvaluate(xpath) as IEnumerable
-            //              select r).Single();
-
-
-            throw new NotImplementedException();
-            // return result;
         }
     }
 }
