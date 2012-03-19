@@ -76,6 +76,8 @@ using Sedodream.SelfPub.Common.Extensions;
                 process.Kill();
                 throw new TimeoutExceededException(message);
             }
+
+            log.Debug("msdeploy.exe has exited");
         }
         
         /// <summary>
@@ -93,7 +95,7 @@ using Sedodream.SelfPub.Common.Extensions;
                 string key = string.Format(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\IIS Extensions\MSDeploy\{0}", ver);
                 string regPathResult = Registry.GetValue(key, "InstallPath", null) as string;
                 if (regPathResult != null) {
-                    path = regPathResult;
+                    path = Path.Combine(regPathResult, "msdeploy.exe");
                     break;
                 }
             }
