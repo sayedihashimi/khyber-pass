@@ -40,9 +40,6 @@
                 // TODO: We can fetch this form a service somewhere
                 this.Config = DeployerConfig.BuildFromAppConfig();
 
-                TestGetLatestPackage();
-
-
                 log.Debug("Getting package to deploy");
                 // get latest package
                 Package packageToDeploy = await this.GetLatestPackage();
@@ -78,7 +75,6 @@
 
         public virtual async Task<Package> GetLatestPackage() {
             Package result = null;
-
             // ex. http://localhost:12914/api/config/packages/latest/SayedHaPackage
             string url = string.Format(@"{0}config/packages/latest/{1}", this.Config.GetConfigServiceBaseUrl, this.Config.PackageNameToDeploy);
 
@@ -88,15 +84,7 @@
             client.Timeout = new TimeSpan(0, 0, 10);           
             HttpResponseMessage response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
-
-            JsonValue objResult = null;
-            try {
-                objResult = await response.Content.ReadAsAsync<JsonValue>();
-                result = Newtonsoft.Json.JsonConvert.DeserializeObject<Package>(objResult.ToString());
-            }
-            catch (Exception ex) {
-                log.Error(ex);
-            }
+            result = await response.Content.ReadAsAsync<Package>();
             return result;
         }
 

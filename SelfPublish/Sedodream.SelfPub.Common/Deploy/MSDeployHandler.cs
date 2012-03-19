@@ -1,17 +1,22 @@
 ﻿namespace Sedodream.SelfPub.Common.Deploy {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml.Linq;
-    using Microsoft.Win32;
-    using Sedodream.SelfPub.Common.Extensions;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security;
+using System.Security.Principal;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Microsoft.Win32;
+using Sedodream.SelfPub.Common.Extensions;
 
     public class MSDeployHandler : IDeployHandler {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MSDeployHandler));
+
         private IJsonSearlizer Searlizer { get; set; }
-        
+
         public MSDeployHandler()
             : this(new JsonNetSearlizer()) {
         }
@@ -33,7 +38,7 @@
                 string message = string.Format("Unknown URI scheme: [{0}]", package.PackageLocation.Scheme);
                 throw new UnknownPackageUriSchemeException(message);
             }
-            
+
             // we have to create the setparameters.xml file
             string parametersFile = this.CreateSetParametersXml(param);
 
@@ -44,7 +49,14 @@
                 throw new RequiredValueNotFoundException(message);
             }
 
-            string args = string.Format("");
+            // msdeploy.exe -verb:sync -source:package={path-to-package} -dest:auto -setParamFile={path-to-setParam.xml}
+            string args = string.Format(
+                @"-verb:sync -source:package=""{0}"" -dest:auto -setParamFile=""{1}"" ",
+                package.PackageLocation.AbsolutePath,
+                parametersFile
+            );
+
+            log.DebugFormat("Calling msdeploy.exe with: [{0}] {1}", args, Environment.NewLine);
 
             ProcessStartInfo psi = new ProcessStartInfo {
                 CreateNoWindow = true,
@@ -53,9 +65,10 @@
                 RedirectStandardInput = true,
 
                 Arguments = args,
+                FileName = pathToMsdeployExe,
+                LoadUserProfile = true,
             };
 
-            // int msdeployTimeout = 
             Process process = Process.Start(psi);
             bool processHasExited = process.WaitForExit(param.MsdeployTimeout);
             if (!processHasExited) {
@@ -64,17 +77,18 @@
                 throw new TimeoutExceededException(message);
             }
         }
-
+        
         /// <summary>
         /// This will check the registry to see where msdeploy.exe is at
         /// </summary>
-        protected internal string GetPathToMsdeploy(){
+        protected internal string GetPathToMsdeploy() {
             // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\IIS Extensions\MSDeploy\3@InstallPath
             // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\IIS Extensions\MSDeploy\2@InstallPath
             // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\IIS Extensions\MSDeploy\1@InstallPath
 
+            log.Debug("Looking for msdeploy.exe");
             string path = null;
-            List<string> versionsToLookfor = new List<string> { "1", "2", "3" };
+            List<string> versionsToLookfor = new List<string> { "3", "2", "1" };
             foreach (string ver in versionsToLookfor) {
                 string key = string.Format(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\IIS Extensions\MSDeploy\{0}", ver);
                 string regPathResult = Registry.GetValue(key, "InstallPath", null) as string;
@@ -83,6 +97,8 @@
                     break;
                 }
             }
+
+            log.Debug(string.Format("path to msdeploy.exe [{0}]", path));
 
             return path;
         }
@@ -105,6 +121,7 @@
                         new XAttribute("value", p.Value))));
 
             string fileToCreate = PathExtensions.GetTempFileWithExtension(".xml");
+            log.Debug(string.Format("Creating setparameters.xml at [{0}]", fileToCreate));
             doc.Save(fileToCreate);
 
             return fileToCreate;
@@ -129,7 +146,7 @@
         /// <summary>
         /// This accepts a JSON string, it will convert ito to an instance of MSDeployDeploymentParameters
         /// </summary>       
-        public static MSDeployDeploymentParameters BuildFromString(string deploymentParameters,IJsonSearlizer searlizer) {
+        public static MSDeployDeploymentParameters BuildFromString(string deploymentParameters, IJsonSearlizer searlizer) {
             if (string.IsNullOrEmpty(deploymentParameters)) { throw new ArgumentNullException("deploymentParameters"); }
             if (searlizer == null) { throw new ArgumentNullException("searlizer"); }
 
