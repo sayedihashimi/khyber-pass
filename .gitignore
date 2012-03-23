@@ -8,3 +8,4 @@ TestResults/
 ~*.docx
 msbuild.log
 .dbshell
+*.private

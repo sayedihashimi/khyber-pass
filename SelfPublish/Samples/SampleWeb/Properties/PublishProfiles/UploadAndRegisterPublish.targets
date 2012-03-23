@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AzurePropsFile Condition=" '$(AzurePropsFile)'=='' ">$(MSBuildThisFileDirectory)..\..\..\..\..\AzureInfo.proj.private</AzurePropsFile>
+    <CustomMSBuildTaskDirectory>$(MSBuildThisFileDirectory)..\..\..\lib\MSBuild\</CustomMSBuildTaskDirectory>
+    <SamplesAssemblyName Condition=" '$(SamplesAssemblyName)'=='' ">Sedodream.Samples.MSBuild.dll</SamplesAssemblyName>
+  </PropertyGroup>
+
+  <Import Project="$(AzurePropsFile)"/>
+  
+  <UsingTask TaskName="UploadToBlobStorage" AssemblyFile="$(CustomMSBuildTaskDirectory)$(SamplesAssemblyName)"/>
+  <UsingTask TaskName="JsonHttpPost" AssemblyFile="$(CustomMSBuildTaskDirectory)$(SamplesAssemblyName)"/>
+
+  <PropertyGroup>
+    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd-mmss))</CurrentDate>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <UploadToBlobStorageDependsOn>
+      _PrepareForUploadToBlobStorage
+    </UploadToBlobStorageDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_PrepareForUploadToBlobStorage">
+    <Message Text="PackageDestinationRoot: $(PackageDestinationRoot)" Importance="high" />
+    
+    <PropertyGroup>
+      <FileToUpload>$(PackageDestinationRoot)</FileToUpload>
+    </PropertyGroup>
+
+    <Message Text="FileToUpload: $(FileToUpload)" Importance="high" />
+  </Target>
+  
+  <Target Name="UploadToBlobStorage" DependsOnTargets="$(UploadToBlobStorageDependsOn)" AfterTargets="Package">  
+    <Error Text="MyStorageConnectionString property is empty" Condition=" '$(MyStorageConnectionString)'=='' "/>
+    <Error Text="MyContainerName property is empty" Condition=" '$(MyContainerName)'=='' "/>
+    
+    <Message Text="Uploading to blob storage. Container [$(MyContainerName)] Filename [$(FileToUpload)]" Importance="high" />
+
+    <ItemGroup>
+      <_TempFile Remove="@(_TempFile)" />
+      <_TempFile Include="$(FileToUpload)" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+      <BlobName>%(_TempFile.Filename)-$(CurrentDate)%(Extension)</BlobName>
+    </PropertyGroup>
+
+    <UploadToBlobStorage 
+      StorageConnectionString="$(MyStorageConnectionString)"
+      ContainerName="$(MyContainerName)"
+      FileToUpload="$(FileToUpload)"
+      BlobName="$(BlobName)" />
+
+    <Message Text="Uploaded $(BlobName) to $(MyContainerName)"/>
+  </Target>
+
+  <Target Name="RegisterPublishWithConfigService">
+    
+  </Target>
+  
+</Project>
