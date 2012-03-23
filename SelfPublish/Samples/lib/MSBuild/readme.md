@@ -1,0 +1,1 @@
+These binaries can be rebuilt from the sources at https://github.com/sayedihashimi/sayed-samples/tree/master/Sedodream.Samples.MSBuild.
