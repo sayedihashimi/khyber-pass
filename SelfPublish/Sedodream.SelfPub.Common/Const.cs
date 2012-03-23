@@ -16,6 +16,8 @@
     }
 
     public enum KnownUriSchemeTypes {
-        file,        
+        file,
+        http,
+        https
     }
 }

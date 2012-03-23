@@ -95,12 +95,14 @@
     <Compile Include="Deploy\Deployer.cs" />
     <Compile Include="Deploy\IDeployHandler.cs" />
     <Compile Include="Deploy\MSDeployHandler.cs" />
+    <Compile Include="Extensions\HttpClient.cs" />
     <Compile Include="Extensions\PathExtensions.cs" />
     <Compile Include="IJsonSearlizer.cs" />
     <Compile Include="MongoPackageRepository.cs" />
     <Compile Include="PackageRepository.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishException.cs" />
     <Compile Include="RequiredValueNotFoundException.cs" />
     <Compile Include="TimeoutExceededException.cs" />
     <Compile Include="UnknownPackageHandlerException.cs" />

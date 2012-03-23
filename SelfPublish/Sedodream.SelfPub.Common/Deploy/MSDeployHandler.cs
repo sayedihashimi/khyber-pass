@@ -1,16 +1,17 @@
 ﻿namespace Sedodream.SelfPub.Common.Deploy {
     using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.Win32;
-using Sedodream.SelfPub.Common.Extensions;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Security;
+    using System.Security.Principal;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml.Linq;
+    using Microsoft.Win32;
+    using Sedodream.SelfPub.Common.Extensions;
 
     public class MSDeployHandler : IDeployHandler {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MSDeployHandler));
@@ -25,7 +26,7 @@ using Sedodream.SelfPub.Common.Extensions;
             this.Searlizer = searlizer;
         }
 
-        public void HandleDeployment(Package package, string deployParameters) {
+        public async void HandleDeployment(Package package, string deployParameters) {
             if (package == null) { throw new ArgumentNullException("package"); }
 
             MSDeployDeploymentParameters param = new MSDeployDeploymentParameters();
@@ -33,11 +34,22 @@ using Sedodream.SelfPub.Common.Extensions;
                 param = this.Searlizer.Desearlize<MSDeployDeploymentParameters>(deployParameters);
             }
 
+            string pathToFile = null;
             // for now this only hanldes file://
-            if (string.Compare(package.PackageLocation.Scheme, KnownUriSchemeTypes.file.ToString(), StringComparison.OrdinalIgnoreCase) != 0) {
+            string pkgScheme = package.PackageLocation.Scheme;
+            if (string.Compare(pkgScheme, KnownUriSchemeTypes.file.ToString(), StringComparison.OrdinalIgnoreCase) == 0) {
+                pathToFile = package.PackageLocation.AbsolutePath;
+            }
+            else if (string.Compare(pkgScheme, KnownUriSchemeTypes.http.ToString(), StringComparison.OrdinalIgnoreCase) == 0 ||
+                    string.Compare(pkgScheme, KnownUriSchemeTypes.https.ToString(), StringComparison.OrdinalIgnoreCase) == 0) {
+                // pathToFile = await this.DownloadFileToLocalFile(package.PackageLocation);
+                pathToFile = this.DownloadFileToLocalFile(package.PackageLocation);
+            }
+            else {
                 string message = string.Format("Unknown URI scheme: [{0}]", package.PackageLocation.Scheme);
                 throw new UnknownPackageUriSchemeException(message);
             }
+
 
             // we have to create the setparameters.xml file
             string parametersFile = this.CreateSetParametersXml(param);
@@ -52,7 +64,7 @@ using Sedodream.SelfPub.Common.Extensions;
             // msdeploy.exe -verb:sync -source:package={path-to-package} -dest:auto -setParamFile={path-to-setParam.xml}
             string args = string.Format(
                 @"-verb:sync -source:package=""{0}"" -dest:auto -setParamFile=""{1}"" ",
-                package.PackageLocation.AbsolutePath,
+                pathToFile,
                 parametersFile
             );
 
@@ -77,9 +89,16 @@ using Sedodream.SelfPub.Common.Extensions;
                 throw new TimeoutExceededException(message);
             }
 
+            if (process.ExitCode != 0) {
+                string message = string.Format("There was an error inovking msdeploy.exe. ExitCode = [{0}]",process.ExitCode);
+                log.Error(message);
+                throw new PublishException(message);
+            }
+
+
             log.Debug("msdeploy.exe has exited");
         }
-        
+
         /// <summary>
         /// This will check the registry to see where msdeploy.exe is at
         /// </summary>
@@ -129,7 +148,37 @@ using Sedodream.SelfPub.Common.Extensions;
             return fileToCreate;
         }
 
+        // it looks like WebAPI has a 64k limitation for this operation currently
+        // so using WebClient for now
+        //private async Task<string> DownloadFileToLocalFile(Uri fileUri) {
+        //    if (fileUri == null) { throw new ArgumentNullException("fileUri"); }
+        //    log.DebugFormat("Download file from [{0}]{1}", fileUri.AbsoluteUri, Environment.NewLine);
+
+        //    string tempFile = PathExtensions.GetTempFileWithExtension(".zip");
+        //    HttpClient client = new HttpClient();
+        //    await client.GetAsync(fileUri).ContinueWith(async reqTask => {
+        //        HttpResponseMessage response = reqTask.Result;
+        //        response.EnsureSuccessStatusCode();
+
+        //        await response.Content.ReadAsFileAsync(tempFile, true);
+        //        log.DebugFormat("Downloaded the file to [{0}{1}]", tempFile, Environment.NewLine);
+        //    });
+
+        //    return tempFile;
+        //}
+
+        public string DownloadFileToLocalFile(Uri fileUri) {
+            string tempFile = PathExtensions.GetTempFileWithExtension(".zip");
+
+            using (System.Net.WebClient webClient = new System.Net.WebClient()) {
+                webClient.DownloadFile(fileUri, tempFile);
+            }
+            return tempFile;
+            throw new NotImplementedException();
+        }
+
     }
+
 
     public class MSDeployDeploymentParameters {
         public MSDeployDeploymentParameters() {

@@ -13,6 +13,7 @@
 
             return GetTempFileWithExtension(tempFilePath, extension);
         }
+
         public static string GetTempFileWithExtension(string basePath, string extension) {
             if (string.IsNullOrEmpty(basePath)) { throw new ArgumentNullException("basePath"); }
             if (string.IsNullOrEmpty(extension)) { throw new ArgumentNullException("extension"); }
