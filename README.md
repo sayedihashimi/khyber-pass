@@ -6,7 +6,7 @@ This project is aimed at simplifying publishing. We are currently interested in 
 <br/>
 ## 1. Publishing the latest version of your app to a Virtual Machine ##
 ## 2. Publishing a web and a windows service ##
-## 3. Publishing a web with either MSDeploy or git ##
+## 3. Unifying publish methods like MSDeploy/git/TFS ##
 <br />
 
 ***
