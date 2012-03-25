@@ -99,6 +99,7 @@
     <Compile Include="MongoPackageRepositoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\RandomDataHelper.cs" />
+    <Compile Include="TestConfig.cs" />
     <Compile Include="TestConfigService.cs" />
     <Compile Include="TestDeployer.cs" />
     <Compile Include="TestJsonNetSearlizer.cs" />
@@ -115,6 +116,10 @@
     <ProjectReference Include="..\Sedodream.SelfPub.Common\Sedodream.SelfPub.Common.csproj">
       <Project>{5de5db2d-7e6c-4cac-9712-e7af71ba6959}</Project>
       <Name>Sedodream.SelfPub.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sedodream.SelfPub.Runner\Sedodream.SelfPub.Runner.csproj">
+      <Project>{46ddc6aa-b2ea-48c5-b795-2a44caff76ce}</Project>
+      <Name>Sedodream.SelfPub.Runner</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

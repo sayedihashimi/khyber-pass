@@ -9,11 +9,15 @@
     /// This is the object which has all the config which the deployer needs to start running.   
     /// </summary>
     public class DeployerConfig {
-        public static DeployerConfig BuildFromAppConfig() {
+        public static DeployerConfig BuildFromAppConfig() {         
+            Config config = new Config();
+
             DeployerConfig result = new DeployerConfig {
-                GetConfigServiceBaseUrl = new Uri(ConfigurationManager.AppSettings[CommonStrings.Deployer.ConfigServiceBaseUrl]),
-                PackageNameToDeploy = ConfigurationManager.AppSettings[CommonStrings.Deployer.PackageNameToDeploy],
-                DeploymentParameters = ConfigurationManager.AppSettings[CommonStrings.Deployer.DeployParameters],
+                GetConfigServiceBaseUrl = new Uri(config.GetConfigSetting<string>(CommonStrings.Deployer.ConfigServiceBaseUrl, required: true)),
+                PackageNameToDeploy = config.GetConfigSetting<string>(CommonStrings.Deployer.PackageNameToDeploy, required: true),
+                DeploymentParameters = config.GetConfigSetting<string>(CommonStrings.Deployer.DeployParameters, required: true),
+                GetLatestPkgTimeout = TimeSpan.FromMilliseconds(
+                    config.GetConfigSetting<int>(CommonStrings.Deployer.GetLatestPackageTimeout, defaultValue: 10000)),
             };
             
             return result;
@@ -37,5 +41,7 @@
         /// will have all the MSDeploy parameter values.
         /// </summary>
         public string DeploymentParameters { get; set; }
+
+        public TimeSpan GetLatestPkgTimeout { get; set; }
     }
 }

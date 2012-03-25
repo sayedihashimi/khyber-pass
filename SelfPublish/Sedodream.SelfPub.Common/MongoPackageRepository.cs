@@ -94,7 +94,9 @@
         /// Should only be used by unit tests
         /// </summary>
         internal void Reset() {
-            this.PackagesCollection.Drop();
+            if (this.PackagesCollection.Exists()) {
+                this.PackagesCollection.Drop();
+            }
         }
         #endregion
     }

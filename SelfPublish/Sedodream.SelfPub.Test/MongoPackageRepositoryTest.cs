@@ -9,6 +9,8 @@
     using System.Diagnostics;
     using Sedodream.SelfPub.Test.Helpers;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     [TestClass]
     public class MongoPackageRepositoryTest {
@@ -101,10 +103,13 @@
             package2.Name = package1.Name;
 
             repo.AddPackage(package1);
+            // wait a second before adding the next one
+            Thread.Sleep(1000);
+
             repo.AddPackage(package2);
             Package latestPackage = repo.GetLatestPackageByName(package2.Name);
 
-            CustomAssert.AreEqual(package1, latestPackage);
+            CustomAssert.AreEqual(package2, latestPackage);
         }
 
         [TestMethod]        

@@ -16,6 +16,7 @@
             public static string PackageNameToDeploy = "packageNameToDeploy";
             public static string DeployParameters = "deployParameters";
             public static string MsdeployTimeout = "msdeployTimeout";
+            public static string GetLatestPackageTimeout = "getLatestPackageTimeout";
         }
     }
 }
