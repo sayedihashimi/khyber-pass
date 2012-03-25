@@ -53,7 +53,7 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullExceptio))]
         public void Test_GetTempFileWithExtension_NullBasePath() {
             PathExtensions.GetTempFileWithExtension(null, ".zip");
         }
