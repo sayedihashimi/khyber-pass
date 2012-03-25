@@ -52,5 +52,12 @@
             CustomAssert.AreEqual(package, ppm);
         }
 
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Test_SourceIsNull() {
+            ObjectMapper.Instance.Map<PackagePageModel, Package>(null);
+        }
+
     }
 }

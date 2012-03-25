@@ -31,12 +31,7 @@
             // add the package to the repositry
             this.PackageRepository.AddPackage(pkg);
         }
-
-        public string Get() {
-            return "defualt result here";
-        }
-
-
+        
         // Sample OData queries that callers can use here
         //  http://localhost:12914/api/config/allPackages?$filter=startswith(Name,'PkgN')
         //  http://localhost:12914/api/config/allPackages?$filter=(Name eq 'PkgName')

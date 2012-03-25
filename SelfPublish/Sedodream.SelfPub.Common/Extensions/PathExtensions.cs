@@ -20,8 +20,6 @@
 
             basePath = basePath.Trim();
             extension = extension.Trim();
-            if (string.IsNullOrEmpty(basePath)) { throw new ArgumentNullException("basePath"); }
-            if (string.IsNullOrEmpty(extension)) { throw new ArgumentNullException("extension"); }
 
             string extWithPeriod = extension.StartsWith(".") ? extension : string.Format(".{0}", extension);
 

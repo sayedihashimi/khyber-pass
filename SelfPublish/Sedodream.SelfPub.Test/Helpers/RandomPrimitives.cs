@@ -46,10 +46,11 @@
             return retValue;
         }
 
-        public long GetRandomLong(long max) {
+        public long GetRandomLong(int max) {
             Random random = new Random(DateTime.Now.Millisecond);
 
             return (long)random.Next((int)max);
+            
         }
 
         public int GetRandomInt(int max) {

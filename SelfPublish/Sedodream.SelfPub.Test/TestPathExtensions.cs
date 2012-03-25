@@ -51,5 +51,17 @@
             Assert.IsTrue(filePath.EndsWith(".xml"));
             Assert.IsFalse(filePath.EndsWith("..xml"));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Test_GetTempFileWithExtension_NullBasePath() {
+            PathExtensions.GetTempFileWithExtension(null, ".zip");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Test_GetTempFileWithExtension_NullExtension() {
+            PathExtensions.GetTempFileWithExtension(@"C:\temp", null);
+        }
     }
 }

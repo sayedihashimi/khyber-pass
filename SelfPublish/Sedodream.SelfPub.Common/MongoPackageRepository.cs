@@ -80,10 +80,6 @@
         }
 
         #region protected/private items
-        protected MongoServer GetServer() {
-            return this.Server;
-        }
-
         protected MongoDatabase GetDatabase() {
             return this.Database;
         }
