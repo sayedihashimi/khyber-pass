@@ -26,7 +26,7 @@
             this.Searlizer = searlizer;
         }
 
-        public async void HandleDeployment(Package package, string deployParameters) {
+        public void HandleDeployment(Package package, string deployParameters) {
             if (package == null) { throw new ArgumentNullException("package"); }
 
             MSDeployDeploymentParameters param = new MSDeployDeploymentParameters();
@@ -148,25 +148,6 @@
             return fileToCreate;
         }
 
-        // it looks like WebAPI has a 64k limitation for this operation currently
-        // so using WebClient for now
-        //private async Task<string> DownloadFileToLocalFile(Uri fileUri) {
-        //    if (fileUri == null) { throw new ArgumentNullException("fileUri"); }
-        //    log.DebugFormat("Download file from [{0}]{1}", fileUri.AbsoluteUri, Environment.NewLine);
-
-        //    string tempFile = PathExtensions.GetTempFileWithExtension(".zip");
-        //    HttpClient client = new HttpClient();
-        //    await client.GetAsync(fileUri).ContinueWith(async reqTask => {
-        //        HttpResponseMessage response = reqTask.Result;
-        //        response.EnsureSuccessStatusCode();
-
-        //        await response.Content.ReadAsFileAsync(tempFile, true);
-        //        log.DebugFormat("Downloaded the file to [{0}{1}]", tempFile, Environment.NewLine);
-        //    });
-
-        //    return tempFile;
-        //}
-
         public string DownloadFileToLocalFile(Uri fileUri) {
             string tempFile = PathExtensions.GetTempFileWithExtension(".zip");
 
@@ -174,7 +155,6 @@
                 webClient.DownloadFile(fileUri, tempFile);
             }
             return tempFile;
-            throw new NotImplementedException();
         }
 
     }
