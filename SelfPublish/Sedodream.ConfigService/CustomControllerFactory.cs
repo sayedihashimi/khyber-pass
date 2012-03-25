@@ -1,9 +1,6 @@
 ﻿namespace Sedodream.SelfPub.ConfigService {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
-    using System.Linq;
-    using System.Web;
     using Sedodream.SelfPub.Common;
     using Sedodream.SelfPub.ConfigService.Controllers;
 
@@ -57,9 +54,9 @@
         #endregion
 
         private IPackageRepository CreatePackageRepository() {
-            
             // TODO: Switch out for an IoC
-            return new MongoPackageRepository(ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString);
+            return new MongoPackageRepository(
+                 new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString);
         }
 
         private IJsonSearlizer CreateJsonSearlizer() {

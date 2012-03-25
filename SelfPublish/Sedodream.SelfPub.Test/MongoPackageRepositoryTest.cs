@@ -1,16 +1,14 @@
 ﻿namespace Sedodream.SelfPub.Test {
     using System;
-    using System.Configuration;
-    using System.IO;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Sedodream.SelfPub.Common;
-    using System.Linq;
-    using MongoDB.Driver;
-    using System.Diagnostics;
-    using Sedodream.SelfPub.Test.Helpers;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
     using System.Threading;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using MongoDB.Driver;
+    using Sedodream.SelfPub.Common;
+    using Sedodream.SelfPub.Test.Helpers;
 
     [TestClass]
     public class MongoPackageRepositoryTest {
@@ -23,9 +21,9 @@
             var mongodbexe = mongoDbDir.GetFiles("mongod.exe").Single();
 
             DirectoryInfo testCtxDirectory = new DirectoryInfo(testContext.TestDir);
-            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(ConfigurationManager.AppSettings[CommonTestStrings.MongodbDir]);
+            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(new Config().GetAppSetting<string>(CommonTestStrings.MongodbDir));
 
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString =new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
             string args = string.Format(@"--dbpath ""{0}"" --port {1}", dataDbDir.FullName, mub.Server.Port);
 
@@ -54,7 +52,7 @@
         [TestMethod]
         public void Test_AddPackage() {            
             Package package = RandomDataHelper.Instance.CreateRandomePackage();
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoPackageRepository repo = new MongoPackageRepository(connectionString);
 
             repo.Reset();
@@ -71,14 +69,14 @@
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Test_AddPackage_Null() {
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoPackageRepository repo = new MongoPackageRepository(connectionString);
             repo.AddPackage(null);        
         }
 
         [TestMethod]
         public void Test_GetLatestPackageByName_1Package() {
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
             MongoPackageRepository repo = new MongoPackageRepository(connectionString);
             repo.Reset();
@@ -93,7 +91,7 @@
 
         [TestMethod]
         public void Test_GetLatestPackageByName_2Packages() {
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
             MongoPackageRepository repo = new MongoPackageRepository(connectionString);
             repo.Reset();
@@ -114,7 +112,7 @@
 
         [TestMethod]        
         public void Test_GetPackagesByName_1Package() {
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
             MongoPackageRepository repo = new MongoPackageRepository(connectionString);
             repo.Reset();
@@ -130,7 +128,7 @@
 
         [TestMethod]
         public void Test_GetPackagesByName_2Packages() {
-            string connectionString = ConfigurationManager.ConnectionStrings[CommonStrings.Database.ConnectionStringName].ConnectionString;
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
             MongoPackageRepository repo = new MongoPackageRepository(connectionString);
             repo.Reset();

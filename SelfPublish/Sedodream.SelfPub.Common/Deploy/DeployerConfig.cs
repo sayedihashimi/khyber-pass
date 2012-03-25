@@ -9,15 +9,28 @@
     /// This is the object which has all the config which the deployer needs to start running.   
     /// </summary>
     public class DeployerConfig {
-        public static DeployerConfig BuildFromAppConfig() {         
-            Config config = new Config();
+        private Config Config { get; set; }
 
+        public DeployerConfig()
+            : this(new Config()) {
+        }
+
+        public DeployerConfig(Config config) {
+            if (config == null) { throw new ArgumentNullException("config"); }
+            this.Config = config;
+        }
+
+        public static DeployerConfig BuildFromAppConfig() {
+            return DeployerConfig.BuildFromAppConfig(new Config());
+        }
+
+        public static DeployerConfig BuildFromAppConfig(Config config) {
             DeployerConfig result = new DeployerConfig {
-                GetConfigServiceBaseUrl = new Uri(config.GetConfigSetting<string>(CommonStrings.Deployer.ConfigServiceBaseUrl, required: true)),
-                PackageNameToDeploy = config.GetConfigSetting<string>(CommonStrings.Deployer.PackageNameToDeploy, required: true),
-                DeploymentParameters = config.GetConfigSetting<string>(CommonStrings.Deployer.DeployParameters, required: true),
+                GetConfigServiceBaseUrl = new Uri(config.GetAppSetting<string>(CommonStrings.Deployer.ConfigServiceBaseUrl, required: true)),
+                PackageNameToDeploy = config.GetAppSetting<string>(CommonStrings.Deployer.PackageNameToDeploy, required: true),
+                DeploymentParameters = config.GetAppSetting<string>(CommonStrings.Deployer.DeployParameters, required: true),
                 GetLatestPkgTimeout = TimeSpan.FromMilliseconds(
-                    config.GetConfigSetting<int>(CommonStrings.Deployer.GetLatestPackageTimeout, defaultValue: 10000)),
+                    config.GetAppSetting<int>(CommonStrings.Deployer.GetLatestPackageTimeout, defaultValue: 10000)),
             };
             
             return result;

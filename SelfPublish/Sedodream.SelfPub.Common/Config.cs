@@ -6,7 +6,9 @@
     using System.Text;
 
     public class Config {
-        public T GetConfigSetting<T>(string name, T defaultValue = default(T), bool required = false) {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(Config));
+
+        public virtual T GetAppSetting<T>(string name, T defaultValue = default(T), bool required = false) {
             if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
 
             T result = default(T);
@@ -20,7 +22,23 @@
 
             if (required && result == null) {
                 string message = string.Format("Missing required configuration value [{0}]",name);
-                throw new ConfigurationException(message);
+                log.Error(message);
+                throw new ConfigurationErrorsException(message);
+            }
+
+            return result;
+        }
+
+        public virtual ConnectionStringSettings GetConnectionString(string name,bool required = false) {
+            if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
+
+            ConnectionStringSettings result = null;
+
+            result = ConfigurationManager.ConnectionStrings[name];
+            if (required && result == null) {
+                string message = string.Format("Missing required connection string in config [{0}]",name);
+                log.Error(message);
+                throw new ConfigurationErrorsException(message);
             }
 
             return result;
