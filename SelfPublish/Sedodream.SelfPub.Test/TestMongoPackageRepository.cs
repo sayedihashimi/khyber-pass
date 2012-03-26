@@ -11,7 +11,7 @@
     using Sedodream.SelfPub.Test.Helpers;
 
     [TestClass]
-    public class MongoPackageRepositoryTest {
+    public class TestMongoPackageRepository {
         private static Process mongoDbProcess;
 
         [ClassInitialize]

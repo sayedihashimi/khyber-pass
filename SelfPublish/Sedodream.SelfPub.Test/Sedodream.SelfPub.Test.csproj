@@ -96,13 +96,14 @@
     <Compile Include="CustomAssert.cs" />
     <Compile Include="Helpers\RandomPrimitives.cs" />
     <Compile Include="Helpers\RandomStringGenerator.cs" />
-    <Compile Include="MongoPackageRepositoryTest.cs" />
+    <Compile Include="TestMongoPackageRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\RandomDataHelper.cs" />
     <Compile Include="TestConfig.cs" />
     <Compile Include="TestConfigService.cs" />
     <Compile Include="TestDeployer.cs" />
     <Compile Include="TestJsonNetSearlizer.cs" />
+    <Compile Include="TestMongoDbDeployRecorder.cs" />
     <Compile Include="TestMSDeployHandler.cs" />
     <Compile Include="TestPathExtensions.cs" />
     <Compile Include="TestMSDeployDeploymentParameters.cs" />

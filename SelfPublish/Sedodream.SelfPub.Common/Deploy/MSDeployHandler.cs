@@ -1,21 +1,21 @@
 ﻿namespace Sedodream.SelfPub.Common.Deploy {
     using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Security;
-    using System.Security.Principal;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Xml.Linq;
-    using Microsoft.Win32;
-    using Sedodream.SelfPub.Common.Extensions;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Security;
+using System.Security.Principal;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Microsoft.Win32;
+using Sedodream.SelfPub.Common.Extensions;
 
     public class MSDeployHandler : IDeployHandler {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MSDeployHandler));
-
+        
         private IJsonSearlizer Searlizer { get; set; }
 
         public MSDeployHandler()

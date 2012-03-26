@@ -17,6 +17,9 @@
             public static string DeployParameters = "deployParameters";
             public static string MsdeployTimeout = "msdeployTimeout";
             public static string GetLatestPackageTimeout = "getLatestPackageTimeout";
+            public static string DataFolder = "dataFolder";
+            public static string MongoDbRunnerConnectionString = "mondodbRunner";
+            public static string RecordedPackagesCollectionName = "recordedPackages";
         }
     }
 }

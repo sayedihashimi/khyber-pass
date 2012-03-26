@@ -94,6 +94,7 @@
     <Compile Include="Const.cs" />
     <Compile Include="Deploy\DeployerConfig.cs" />
     <Compile Include="Deploy\Deployer.cs" />
+    <Compile Include="Deploy\IDeployRecorder.cs" />
     <Compile Include="Deploy\IDeployHandler.cs" />
     <Compile Include="Deploy\MSDeployHandler.cs" />
     <Compile Include="Extensions\HttpClient.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="TimeoutExceededException.cs" />
     <Compile Include="UnknownPackageHandlerException.cs" />
     <Compile Include="UnknownPackageUriSchemeException.cs" />
+    <Compile Include="UnknownStateException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
