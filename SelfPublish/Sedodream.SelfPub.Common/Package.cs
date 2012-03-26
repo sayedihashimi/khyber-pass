@@ -8,12 +8,12 @@ using System.Text;
     public class Package {
         public Package() {
             // this is the default package type
+            this.Id = Guid.NewGuid();
             this.PackageType = KnownPackageTypes.msdeploy.ToString();
             this.Tags = new List<string>();
         }
 
-        public MongoDB.Bson.ObjectId Id { get; set; }
-
+        public Guid Id { get; set; }
         /// <summary>
         /// This will get automatically set when the package is inserted.
         /// </summary>

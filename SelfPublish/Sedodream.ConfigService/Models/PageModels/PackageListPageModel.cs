@@ -21,7 +21,7 @@
             });
         }
 
-        public ObjectId Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string PackageLocation { get; set; }
         public string PackageManifest { get; set; }

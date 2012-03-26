@@ -19,7 +19,7 @@
             mockRepo.Setup(foo => foo
                 .AddPackage(It.IsAny<Package>()))
                 .Returns<Package>(p => {
-                    p.Id = new ObjectId();
+                    p.Id = Guid.NewGuid();
                     return p;
                 });
 

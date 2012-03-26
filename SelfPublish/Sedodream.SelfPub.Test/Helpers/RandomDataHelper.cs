@@ -26,7 +26,7 @@ using Sedodream.SelfPub.ConfigService.Models.PageModels;
 
         public Package CreateRandomePackage() {
             Package package = new Package {
-                Id = ObjectId.GenerateNewId(),
+                Id = Guid.NewGuid(),
                 Name = Guid.NewGuid().ToString(),
                 PackageLocation = new Uri(Path.Combine(string.Format(@"C:\temp\{0}",Guid.NewGuid()), Guid.NewGuid().ToString())),
                 PackageManifest = Guid.NewGuid().ToString(),
