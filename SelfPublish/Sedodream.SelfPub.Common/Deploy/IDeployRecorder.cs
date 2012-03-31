@@ -34,26 +34,27 @@
         private DirectoryInfo MongoDbDataDirPath { get; set; }
         private Process MongoDbProcess { get; set; }
 
-        protected internal MongoServer Server { get; set; }
-        protected internal MongoDatabase Database { get; set; }
-        protected MongoCollection RecordedPackagesCollection {
-            get {
-                return this.Database.GetCollection(CommonStrings.Database.CollectionName);
-            }
-        }
-
+        protected internal IPackageRepository PackageRepository;
+        
         private MongoDbDeployRecorder() {
             this.StartMongoDb();
+
+            this.PackageRepository = new MongoPackageRepository(new Config().GetConnectionString(CommonStrings.Deployer.MongoDbRunnerConnectionString).ConnectionString);
         }
 
         ~MongoDbDeployRecorder() {
             // tear down MongoDB here
             if (this.MongoDbProcess != null) {
-                this.MongoDbProcess.CloseMainWindow();
-                this.MongoDbProcess.WaitForExit(5 * 1000);
+
+                if (!this.MongoDbProcess.HasExited) {
+                    this.MongoDbProcess.CloseMainWindow();
+                    this.MongoDbProcess.WaitForExit(5 * 1000);
+                }
+
                 if (!this.MongoDbProcess.HasExited) {
                     this.MongoDbProcess.Kill();
                 }
+
                 this.MongoDbProcess = null;
             }
         }
@@ -64,6 +65,9 @@
 
         #region IDeployRecord implementation
         public bool HasPackageBeenPreviouslyDeployed(Package package) {
+
+            throw new NotImplementedException();
+
             return this.HasPackageBeenPreviouslyDeployed(package.Id);
         }
 
@@ -72,7 +76,11 @@
         }
 
         public void RecordDeployedPackage(Package package) {
-            this.RecordedPackagesCollection.Insert<Package>(package);
+
+            this.PackageRepository.AddPackage(package);
+
+
+            // this.RecordedPackagesCollection.Insert<Package>(package);
         }
         #endregion
 
@@ -89,6 +97,7 @@
                 log.Error(message);
                 throw new UnknownStateException(message);
             }
+            log.Info("Starting mongodb");
 
             string mongoConnectionString = new Config().GetConnectionString(CommonStrings.Deployer.MongoDbRunnerConnectionString, required: true).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(mongoConnectionString);
@@ -107,24 +116,41 @@
                 Arguments = args,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
             };
 
-            MongoDbProcess = Process.Start(psi);
-
+            this.StartMongoProcess(psi);
+            
             log.Info("Started mongodb");
+        }
 
-            this.Server = MongoServer.Create(mub.ToMongoUrl());
-            this.Server.Connect();
-            log.Info("Now connected to mongodb server");
+        // this will start the process and attach event handlers to it for logging
+        private void StartMongoProcess(ProcessStartInfo psi) {
+            if (psi == null) { throw new ArgumentNullException("psi"); }
 
-            if (!Server.DatabaseExists(mub.DatabaseName)) {
-                var db = this.Server.GetDatabase(mub.DatabaseName);
-                // create the collection
-                db.CreateCollection(CommonStrings.Deployer.RecordedPackagesCollectionName);
-            }
+            this.MongoDbProcess = Process.Start(psi);
 
-            this.Database = this.Server.GetDatabase(mub.DatabaseName);
+            this.MongoDbProcess.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {
+                string message = string.Format("Error from mongo db process: [{0}]", e.Data);
+                log.Error(message);
+            };
+
+            this.MongoDbProcess.Exited += (object sender, EventArgs e) => {
+                if (this.MongoDbProcess.ExitCode != 0) {
+                    string message = string.Format("mongodb process has exited with a non-zero exit code: [{0}]",this.MongoDbProcess.ExitCode);
+                    
+                    log.Error(message);
+                    throw new UnknownStateException(message);
+                }
+            };
+        }
+
+        void MongoDbProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e) {
+            throw new NotImplementedException();
+        }
+
+        void MongoDbProcess_Exited(object sender, EventArgs e) {
+            throw new NotImplementedException();
         }
 
         protected internal void PrepareMongoDirectory() {
@@ -163,8 +189,9 @@
         /// Should only be used by unit tests
         /// </summary>
         internal void Reset() {
-            if (this.RecordedPackagesCollection.Exists()) {
-                this.RecordedPackagesCollection.Drop();
+            MongoPackageRepository mpr = this.PackageRepository as MongoPackageRepository;
+            if (mpr != null) {
+                mpr.Reset();
             }
         }
     }

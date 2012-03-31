@@ -42,6 +42,14 @@
 
         IQueryable<Package> GetPackagesByName(string name);
 
+        /// <summary>
+        /// This will return the package which has the given ID, or <c>null</c>
+        /// if it is not found.
+        /// </summary>
+        /// <param name="id">The ID of the package to locate</param>
+        /// <returns></returns>
+        Package GetPackage(Guid id);
+
         Package GetLatestPackageByName(string name);
     }
 }

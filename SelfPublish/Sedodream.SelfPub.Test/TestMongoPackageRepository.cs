@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using log4net.Config;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using MongoDB.Driver;
     using Sedodream.SelfPub.Common;
@@ -16,6 +17,7 @@
 
         [ClassInitialize]
         public static void Initalize(TestContext testContext) {
+            XmlConfigurator.Configure();
             // we have to start mongo DB
             DirectoryInfo mongoDbDir = GetMongoDbDir(testContext);
             var mongodbexe = mongoDbDir.GetFiles("mongod.exe").Single();
@@ -144,6 +146,49 @@
             Assert.IsTrue(result.Count == 2);
             CustomAssert.AreEqual(package1, result[0]);
             CustomAssert.AreEqual(package2, result[1]);
+        }
+
+        [TestMethod]
+        public void Test_GetPackage_ById_1PackageInCollection() {
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
+            MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
+            MongoPackageRepository repo = new MongoPackageRepository(connectionString);
+            repo.Reset();
+
+            // first add a package and then ask try and get it back
+            Package package = RandomDataHelper.Instance.CreateRandomePackage();
+            repo.AddPackage(package);
+
+            Package foundPackage = repo.GetPackage(package.Id);
+            Assert.IsNotNull(foundPackage);
+            CustomAssert.AreEqual(package, foundPackage);
+        }
+
+        [TestMethod]
+        public void Test_GetPackage_ById_ManyPackagesInCollection() {
+            string connectionString = new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
+            MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
+            MongoPackageRepository repo = new MongoPackageRepository(connectionString);
+            repo.Reset();
+
+            // add a random # of packages before the one we want
+            int numToAdd = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+            for (int i = 0; i < numToAdd; i++) {
+                repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage());
+            }
+
+            Package package = RandomDataHelper.Instance.CreateRandomePackage();
+            repo.AddPackage(package);
+
+            // add a random # of packages after the one we want
+            numToAdd = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+            for (int i = 0; i < numToAdd; i++) {
+                repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage());
+            }
+
+            Package foundPackage = repo.GetPackage(package.Id);
+            Assert.IsNotNull(foundPackage);
+            CustomAssert.AreEqual(package, foundPackage);
         }
 
         private static DirectoryInfo GetMongoDbDir(TestContext testContext) {

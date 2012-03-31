@@ -59,6 +59,12 @@
             return result.AsQueryable();
         }
 
+        public Package GetPackage(Guid id) {
+            return (from p in this.PackagesCollection.FindAllAs<Package>()
+                    where p.Id == id
+                    select p).SingleOrDefault();
+        }
+
         public IQueryable<Package> GetPackagesByName(string name) {
             if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
 
@@ -78,7 +84,7 @@
 
             return result.FirstOrDefault();
         }
-
+     
         #region protected/private items
         protected MongoDatabase GetDatabase() {
             return this.Database;
