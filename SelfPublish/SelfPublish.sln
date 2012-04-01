@@ -9,12 +9,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sedodream.SelfPub.Test", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sedodream.SelfPub.Runner", "Sedodream.SelfPub.Runner\Sedodream.SelfPub.Runner.csproj", "{46DDC6AA-B2EA-48C5-B795-2A44CAFF76CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KhyberPass.DeployService", "KhyberPass.DeployService\KhyberPass.DeployService.csproj", "{389ABE95-ED55-4F0F-AA6C-2DC182144D86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{389ABE95-ED55-4F0F-AA6C-2DC182144D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{389ABE95-ED55-4F0F-AA6C-2DC182144D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{389ABE95-ED55-4F0F-AA6C-2DC182144D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{389ABE95-ED55-4F0F-AA6C-2DC182144D86}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46DDC6AA-B2EA-48C5-B795-2A44CAFF76CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46DDC6AA-B2EA-48C5-B795-2A44CAFF76CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46DDC6AA-B2EA-48C5-B795-2A44CAFF76CE}.Release|Any CPU.ActiveCfg = Release|Any CPU

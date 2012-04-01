@@ -54,8 +54,8 @@
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
             { 
-                //new DeploymentService() 
-                new DummyService()
+                new DeploymentService() 
+                //new DummyService()
             };
             ServiceBase.Run(ServicesToRun);
 

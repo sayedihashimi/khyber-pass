@@ -11,30 +11,28 @@
     using System.Timers;
     using Sedodream.SelfPub.Common;
 
-    public partial class DeploymentService: ServiceBase{
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(DeploymentService));
+    //public partial class DeploymentService: ServiceBase{
+    //    private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(DeploymentService));
 
-        public DeploymentService() {
-            log.Info("DeploymentService started");
+    //    public DeploymentService() {
+    //        log.Info("DeploymentService started");
 
-            InitializeComponent();
-        }
+    //        InitializeComponent();
+    //    }
 
-        protected override void OnStart(string[] args) {
-            log.Info("OnStart called");
-            base.OnStart(args);
-        }
-
-
-        protected override void OnStop() {
-            log.Info("OnStop called");
-            base.OnStop();
-        }
-    }
+    //    protected override void OnStart(string[] args) {
+    //        log.Info("OnStart called");
+    //        base.OnStart(args);
+    //    }
 
 
-    /*
-    internal partial class DeploymentService2 : ServiceBase {
+    //    protected override void OnStop() {
+    //        log.Info("OnStop called");
+    //        base.OnStop();
+    //    }
+    //}
+
+    internal partial class DeploymentService : ServiceBase {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(DeploymentService));
 
         protected IServiceRunner ServiceRunner { get; set; }
@@ -84,7 +82,7 @@
         protected override void OnStart(string[] args) {
             log.Info(string.Format("OnStart called - [{0}]", this.GetType().FullName));
 
-            if (args != null && args[0].Contains("pauseOnStart")) {
+            /*if (args != null && args.Length > 0 && args[0].Contains("pauseOnStart")) */{
                 // this will give a chance to attach a debugger to the service
                 Thread.Sleep(1000 * 60);
             }
@@ -106,7 +104,7 @@
             this.Timer.Stop();
         }
     }
-    */
+    
 
 
 }
