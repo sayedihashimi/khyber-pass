@@ -1,12 +1,8 @@
 ﻿namespace Sedodream.SelfPub.Common.Deploy {
     using System;
-    using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
     using MongoDB.Driver;
 
     /// <summary>
@@ -65,14 +61,13 @@
 
         #region IDeployRecord implementation
         public bool HasPackageBeenPreviouslyDeployed(Package package) {
-
-            throw new NotImplementedException();
+            if (package == null) { throw new ArgumentNullException("package"); }
 
             return this.HasPackageBeenPreviouslyDeployed(package.Id);
         }
 
         public bool HasPackageBeenPreviouslyDeployed(Guid id) {
-            throw new NotImplementedException();
+            return this.PackageRepository.GetPackage(id) == null ? false : true;
         }
 
         public void RecordDeployedPackage(Package package) {
@@ -143,14 +138,6 @@
                     throw new UnknownStateException(message);
                 }
             };
-        }
-
-        void MongoDbProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e) {
-            throw new NotImplementedException();
-        }
-
-        void MongoDbProcess_Exited(object sender, EventArgs e) {
-            throw new NotImplementedException();
         }
 
         protected internal void PrepareMongoDirectory() {

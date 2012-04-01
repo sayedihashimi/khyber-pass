@@ -18,21 +18,19 @@
 
         [TestMethod]
         public void Test_Recorder_AddPackage() {
-            try {
-                Package package = RandomDataHelper.Instance.CreateRandomePackage();
+            Package package = RandomDataHelper.Instance.CreateRandomePackage();
 
-                MongoDbDeployRecorder recorder = MongoDbDeployRecorder.Instance;
-                recorder.Reset();
+            MongoDbDeployRecorder recorder = MongoDbDeployRecorder.Instance;
+            recorder.Reset();
 
-                recorder.RecordDeployedPackage(package);
+            bool hasBeenDeployedBeforeInsert = recorder.HasPackageBeenPreviouslyDeployed(package.Id);
 
-                Assert.Inconclusive("Not finished yet");
-            }
-            catch (Exception ex) {
-                string message = ex.Message;
-                Assert.Fail(message);
-            }
+            recorder.RecordDeployedPackage(package);
 
+            bool hasBeenDeployedAfterInsert = recorder.HasPackageBeenPreviouslyDeployed(package.Id);
+
+            Assert.IsFalse(hasBeenDeployedBeforeInsert);
+            Assert.IsTrue(hasBeenDeployedAfterInsert);
         }
     }
 }
