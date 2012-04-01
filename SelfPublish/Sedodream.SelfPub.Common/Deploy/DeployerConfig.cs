@@ -25,6 +25,8 @@
         }
 
         public static DeployerConfig BuildFromAppConfig(Config config) {
+            if (config == null) { throw new ArgumentNullException("config"); }
+
             DeployerConfig result = new DeployerConfig {
                 GetConfigServiceBaseUrl = new Uri(config.GetAppSetting<string>(CommonStrings.Deployer.ConfigServiceBaseUrl, required: true)),
                 PackageNameToDeploy = config.GetAppSetting<string>(CommonStrings.Deployer.PackageNameToDeploy, required: true),

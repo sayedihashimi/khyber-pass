@@ -3,6 +3,7 @@
     using System.Configuration;
     using System.Diagnostics;
     using System.IO;
+    using System.Threading;
     using MongoDB.Driver;
 
     /// <summary>
@@ -31,12 +32,11 @@
         protected internal IPackageRepository PackageRepository;
         
         private MongoDbDeployRecorder() {
-            this.StartMongoDb();
-
-            this.PackageRepository = new MongoPackageRepository(new Config().GetConnectionString(CommonStrings.Deployer.MongoDbRunnerConnectionString).ConnectionString);
+            
         }
 
         ~MongoDbDeployRecorder() {
+            log.Info("Mongodb Recorder closing down");
             // tear down MongoDB here
             if (this.MongoDbProcess != null) {
 
@@ -46,6 +46,7 @@
                 }
 
                 if (!this.MongoDbProcess.HasExited) {
+                    log.Info("Killing mongodb process because it hasn't exited in time");
                     this.MongoDbProcess.Kill();
                 }
 
@@ -53,8 +54,23 @@
             }
         }
 
+        private bool HasBeenInitalized { get; set; }
+
+        private void Intialize() {
+            this.StartMongoDb();
+
+            this.PackageRepository = new MongoPackageRepository(new Config().GetConnectionString(CommonStrings.Deployer.MongoDbRunnerConnectionString).ConnectionString);
+        }
+        
         public static MongoDbDeployRecorder Instance {
-            get { return MongoDbDeployRecorder.instance; }
+            get {
+                if (!MongoDbDeployRecorder.instance.HasBeenInitalized) {
+                    MongoDbDeployRecorder.instance.Intialize();
+                    MongoDbDeployRecorder.instance.HasBeenInitalized = true;
+                }
+
+                return MongoDbDeployRecorder.instance; 
+            }
         }
 
         #region IDeployRecord implementation
@@ -73,6 +89,7 @@
 
         internal void StartMongoDb() {
             this.PrepareMongoDirectory();
+            
             // now both MongoDbExePath and MongoDbDataDirPath should be non-null and on disk
             if (this.MongoDbExePath == null || !this.MongoDbExePath.Exists) {
                 string message = string.Format("Expected mongo.exe to be not-null and on disk, but it isn't. Value: [{0}] ",this.MongoDbExePath);
@@ -89,7 +106,8 @@
             string mongoConnectionString = new Config().GetConnectionString(CommonStrings.Deployer.MongoDbRunnerConnectionString, required: true).ConnectionString;
             MongoUrlBuilder mub = new MongoUrlBuilder(mongoConnectionString);
 
-            string args = string.Format(@"--dbpath ""{0}"" --port {1}", this.MongoDbDataDirPath.FullName, mub.Server.Port);
+            string dataPath = this.MongoDbDataDirPath.FullName.TrimEnd('\\');
+            string args = string.Format(@"--dbpath ""{0}"" --port {1}", dataPath, mub.Server.Port);
 
             log.InfoFormat(
                 "Starting mongodb: {0} {1}{2}",
@@ -104,11 +122,16 @@
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+
+                CreateNoWindow = true,
+                LoadUserProfile=true,
             };
 
             this.StartMongoProcess(psi);
+            // give it a chance to start up
             
-            log.Info("Started mongodb");
+            log.InfoFormat("Started mongodb with pid: {0}{1}",this.MongoDbProcess.Id,Environment.NewLine);
+            Thread.Sleep(2000);
         }
 
         // this will start the process and attach event handlers to it for logging
@@ -116,10 +139,15 @@
             if (psi == null) { throw new ArgumentNullException("psi"); }
 
             this.MongoDbProcess = Process.Start(psi);
+            
+            this.MongoDbProcess.EnableRaisingEvents = true;
 
             this.MongoDbProcess.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {
-                string message = string.Format("Error from mongo db process: [{0}]", e.Data);
-                log.Error(message);
+                log.ErrorFormat("Error from mongo db process: [{0}]{1}", e.Data, Environment.NewLine);
+            };
+
+            this.MongoDbProcess.OutputDataReceived += (object sender, DataReceivedEventArgs e) => {
+                log.InfoFormat("Message from mongo.exe: [{0}]{1}",e.Data,Environment.NewLine);
             };
 
             this.MongoDbProcess.Exited += (object sender, EventArgs e) => {
@@ -127,9 +155,15 @@
                     string message = string.Format("mongodb process has exited with a non-zero exit code: [{0}]",this.MongoDbProcess.ExitCode);
                     
                     log.Error(message);
+                    log.Error(MongoDbProcess.StandardError.ReadToEnd());
+                    log.Info(MongoDbProcess.StandardOutput.ReadToEnd());
                     throw new UnknownStateException(message);
                 }
             };
+        }
+
+        void MongoDbProcess_OutputDataReceived(object sender, DataReceivedEventArgs e) {
+            throw new NotImplementedException();
         }
 
         protected internal void PrepareMongoDirectory() {
@@ -147,7 +181,7 @@
                 throw new ConfigurationErrorsException(message);
             }
 
-            this.MongoDbExePath = new FileInfo(Path.Combine(fullPathToMonboDbDir, "mongo.exe"));
+            this.MongoDbExePath = new FileInfo(Path.Combine(fullPathToMonboDbDir, "mongod.exe"));
             if (!this.MongoDbExePath.Exists) {
                 string message = string.Format("mongo.exe not found at [{0}]", this.MongoDbExePath.FullName);
                 throw new ConfigurationErrorsException(message);

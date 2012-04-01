@@ -90,12 +90,6 @@
     <Compile Include="DeploymentService.Designer.cs">
       <DependentUpon>DeploymentService.cs</DependentUpon>
     </Compile>
-    <Compile Include="DummyService.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DummyService.Designer.cs">
-      <DependentUpon>DummyService.cs</DependentUpon>
-    </Compile>
     <Compile Include="IServiceRunner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
