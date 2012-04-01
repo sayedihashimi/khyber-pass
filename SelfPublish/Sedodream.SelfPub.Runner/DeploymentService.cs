@@ -10,28 +10,7 @@
     using System.Threading;
     using System.Timers;
     using Sedodream.SelfPub.Common;
-
-    //public partial class DeploymentService: ServiceBase{
-    //    private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(DeploymentService));
-
-    //    public DeploymentService() {
-    //        log.Info("DeploymentService started");
-
-    //        InitializeComponent();
-    //    }
-
-    //    protected override void OnStart(string[] args) {
-    //        log.Info("OnStart called");
-    //        base.OnStart(args);
-    //    }
-
-
-    //    protected override void OnStop() {
-    //        log.Info("OnStop called");
-    //        base.OnStop();
-    //    }
-    //}
-
+    
     internal partial class DeploymentService : ServiceBase {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(DeploymentService));
 
@@ -42,7 +21,7 @@
 
 
         public DeploymentService()
-            : this(new ServiceRunner(), new Config()) {
+            : this(new DeployServiceRunner(), new Config()) {
         }
 
         public DeploymentService(IServiceRunner serviceRunner, Config config) {
@@ -84,11 +63,11 @@
 
             /*if (args != null && args.Length > 0 && args[0].Contains("pauseOnStart")) */{
                 // this will give a chance to attach a debugger to the service
-                Thread.Sleep(1000 * 60);
+                Thread.Sleep(1000 * 15);
             }
 
             this.Timer = new System.Timers.Timer();
-            this.Timer.Interval = this.Config.GetAppSetting<int>(CommonStrings.Service.ServiceSleepIntervalSeconds, 60 * 5);
+            this.Timer.Interval = 1000 * this.Config.GetAppSetting<int>(CommonStrings.Service.ServiceSleepIntervalSeconds, 60 * 5);
             this.Timer.Elapsed += TimerElapsed;
             
             this.Timer.Stop();
@@ -103,8 +82,5 @@
             this.ServiceRunner.Stop(StopReason.ServiceStopRequested);
             this.Timer.Stop();
         }
-    }
-    
-
-
+    }    
 }

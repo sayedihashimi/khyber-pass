@@ -40,9 +40,15 @@
             // tear down MongoDB here
             if (this.MongoDbProcess != null) {
 
-                if (!this.MongoDbProcess.HasExited) {
-                    this.MongoDbProcess.CloseMainWindow();
-                    this.MongoDbProcess.WaitForExit(5 * 1000);
+                try {
+                    if (!this.MongoDbProcess.HasExited) {
+                        this.MongoDbProcess.CloseMainWindow();
+                        this.MongoDbProcess.WaitForExit(5 * 1000);
+                    }
+                }
+                catch (Exception ex) {
+                    string message = string.Format("Unable to stop the mongodb process, message: {0}{1}", ex.Message, Environment.NewLine);
+                    log.Error(message, ex);
                 }
 
                 if (!this.MongoDbProcess.HasExited) {
@@ -51,6 +57,7 @@
                 }
 
                 this.MongoDbProcess = null;
+
             }
         }
 
