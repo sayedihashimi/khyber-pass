@@ -13,12 +13,12 @@
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args) {            
-            try {
-                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+        static void Main(string[] args) {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            Console.WriteLine("Deployment runner starting");
+            XmlConfigurator.Configure();
 
-                Console.WriteLine("Deployment runner starting");
-                XmlConfigurator.Configure();
+            try {
                 log.Info("Deployment runner starting");
 
                 bool startedFromCmdLine = false;
@@ -49,6 +49,7 @@
             ServicesToRun = new ServiceBase[] 
             { 
                 new DeploymentService() 
+                //new DummyService()
             };
             ServiceBase.Run(ServicesToRun);
 
@@ -58,7 +59,7 @@
         private static void StartCommandLine() {
             log.Info("Deployment runner command line starting");
 
-            Deployer deployer = new Deployer();
+            IDeployer deployer = new Deployer();
             deployer.Start();
 
             Console.WriteLine("Press ENTER to continue");

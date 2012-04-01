@@ -7,6 +7,7 @@
     using MongoDB.Driver;
 
     public class MongoPackageRepository : IPackageRepository{
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(MongoPackageRepository));
         private MongoServer Server { get; set; }
         private MongoDatabase Database { get; set; }
 
@@ -17,14 +18,13 @@
             this.Server = MongoServer.Create(mongoUrl);
             this.Server.Connect();
 
-            if (!Server.DatabaseExists(mongoUrl.DatabaseName)) {
-                // get the database to create it
-                var db = this.Server.GetDatabase(CommonStrings.Database.DatabaseName);
-                // create the collection
-                db.CreateCollection(CommonStrings.Database.CollectionName);
-            }
-
             this.Database = this.Server.GetDatabase(mongoUrl.DatabaseName);
+
+            if (!this.Database.CollectionExists(CommonStrings.Database.CollectionName)) {
+                log.InfoFormat("Creating db collection since it doesn't exist, [{0}]{1}", CommonStrings.Database.CollectionName, Environment.NewLine);
+                // create the collection
+                this.Database.CreateCollection(CommonStrings.Database.CollectionName);
+            }
         }
         /// <summary>
         /// In this case the BaseAddress is the MongoDB connection string.
@@ -59,6 +59,12 @@
             return result.AsQueryable();
         }
 
+        public Package GetPackage(Guid id) {
+            return (from p in this.PackagesCollection.FindAllAs<Package>()
+                    where p.Id == id
+                    select p).SingleOrDefault();
+        }
+
         public IQueryable<Package> GetPackagesByName(string name) {
             if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
 
@@ -78,7 +84,7 @@
 
             return result.FirstOrDefault();
         }
-
+     
         #region protected/private items
         protected MongoDatabase GetDatabase() {
             return this.Database;

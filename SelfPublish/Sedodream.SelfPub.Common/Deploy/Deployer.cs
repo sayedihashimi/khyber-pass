@@ -17,19 +17,21 @@
         void Start();
     }
 
-    public class Deployer {
+    public class Deployer : IDeployer {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(Deployer));
         private DeployerConfig Config { get; set; }
         private IJsonSearlizer Searlizer { get; set; }
+        private IDeployRecorder DeployRecorder { get; set; }
 
         public Deployer()
-            : this(new JsonNetSearlizer()) {
+            : this(new JsonNetSearlizer(),MongoDbDeployRecorder.Instance) {
         }
 
-        public Deployer(IJsonSearlizer searlizer) {
+        public Deployer(IJsonSearlizer searlizer,IDeployRecorder recorder) {
             if (searlizer == null) { throw new ArgumentNullException("searlizer"); }
 
             this.Searlizer = searlizer;
+            this.DeployRecorder = recorder;
         }
 
         public void Start() {
@@ -41,13 +43,24 @@
                 
                 // get latest package
                 Package packageToDeploy = this.GetLatestPackage();
-                log.Debug("Getting deploy handler");
+                if (packageToDeploy == null) {
+                    log.WarnFormat("Did not find a package to deploy, skipping deployment");
+                }
+                else if (!this.DeployRecorder.HasPackageBeenPreviouslyDeployed(packageToDeploy.Id)) {
+                    log.Debug("Getting deploy handler");
 
-                // get package handler
-                IDeployHandler deployHandler = this.GetDeployHandlerFor(packageToDeploy);
+                    // get package handler
+                    IDeployHandler deployHandler = this.GetDeployHandlerFor(packageToDeploy);
 
-                log.Debug("Starting deployment");
-                deployHandler.HandleDeployment(packageToDeploy, this.Config.DeploymentParameters);
+                    log.Debug("Starting deployment");
+                    deployHandler.HandleDeployment(packageToDeploy, this.Config.DeploymentParameters);
+
+                    // now record the deployment so that we don't do it again
+                    this.DeployRecorder.RecordDeployedPackage(packageToDeploy);
+                }
+                else {
+                    log.InfoFormat("Skipping package deployment becausse the package has already been deployed, package id [{0}]{1}", packageToDeploy.Id, Environment.NewLine);
+                }
             }
             catch (Exception ex) {
                 log.Fatal(ex);

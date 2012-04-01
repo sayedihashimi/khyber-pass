@@ -9,10 +9,15 @@
     using Sedodream.SelfPub.Common.Deploy;
     using System.Xml.XPath;
     using System.Collections;
-
+    using log4net.Config;
 
     [TestClass]
     public class TestMSDeployHandler {
+        [ClassInitialize]
+        public static void Initalize(TestContext testContext) {
+            XmlConfigurator.Configure();
+        }
+
         [TestMethod]
         public void Test_CreateSetParametersXml() {
             MSDeployDeploymentParameters parameters = new MSDeployDeploymentParameters();
