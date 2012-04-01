@@ -9,9 +9,7 @@
     /// This will be used to keep track of what packages have been published on a particular
     /// runner.
     /// </summary>
-    public interface IDeployRecorder {
-        bool HasPackageBeenPreviouslyDeployed(Package package);
-        
+    public interface IDeployRecorder {        
         bool HasPackageBeenPreviouslyDeployed(Guid id);
         
         void RecordDeployedPackage(Package package);
@@ -60,12 +58,6 @@
         }
 
         #region IDeployRecord implementation
-        public bool HasPackageBeenPreviouslyDeployed(Package package) {
-            if (package == null) { throw new ArgumentNullException("package"); }
-
-            return this.HasPackageBeenPreviouslyDeployed(package.Id);
-        }
-
         public bool HasPackageBeenPreviouslyDeployed(Guid id) {
             return this.PackageRepository.GetPackage(id) == null ? false : true;
         }

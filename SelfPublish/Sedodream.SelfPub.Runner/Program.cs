@@ -13,7 +13,13 @@
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args) {            
+        static void Main(string[] args) {
+
+            StartService();
+
+            return;
+
+
             try {
                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
@@ -48,7 +54,8 @@
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
             { 
-                new DeploymentService() 
+                //new DeploymentService() 
+                new DummyService()
             };
             ServiceBase.Run(ServicesToRun);
 

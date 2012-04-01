@@ -23,10 +23,14 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            components = new System.ComponentModel.Container();
+            // 
+            // DeploymentService
+            // 
             this.ServiceName = "Service1";
+
         }
 
         #endregion
+
     }
 }

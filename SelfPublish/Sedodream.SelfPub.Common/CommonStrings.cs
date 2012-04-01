@@ -21,5 +21,10 @@
             public static string MongoDbRunnerConnectionString = "mondodbRunner";
             public static string RecordedPackagesCollectionName = "recordedPackages";
         }
+
+        public static class Service {
+            public static string ServiceSleepIntervalSeconds = @"serviceSleepIntervalSeconds";
+            public static string MaxErrorCount = @"maxErrorCount";
+        }
     }
 }
