@@ -18,11 +18,6 @@
             Console.WriteLine("Deployment runner starting");
             XmlConfigurator.Configure();
 
-            StartService();
-
-            return;
-
-
             try {
                 log.Info("Deployment runner starting");
 
