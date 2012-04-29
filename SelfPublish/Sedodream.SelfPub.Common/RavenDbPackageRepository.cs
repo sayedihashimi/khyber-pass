@@ -8,11 +8,31 @@
 
     public class RavenDbPackageRepository : IPackageRepository {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(RavenDbPackageRepository));
+        private static IDictionary<string, RavenDbPackageRepository> RepoMap = new Dictionary<string, RavenDbPackageRepository>();
+        private static object RepoMapLock = new object();
+
+        
+
+        public static RavenDbPackageRepository GetRavenDbRepoFor(string baseDirectory) {
+            if (baseDirectory == null) { throw new ArgumentNullException("baseDirectory"); }
+
+            string baseDirLower = baseDirectory.ToLower();
+            RavenDbPackageRepository repo = null;
+            lock (RepoMapLock) {
+                RepoMap.TryGetValue(baseDirLower, out repo);
+                if (repo == null) {
+                    repo = new RavenDbPackageRepository(baseDirLower);
+                    RepoMap.Add(baseDirLower, repo);
+                }
+            }
+
+            return repo;
+        }
 
         EmbeddableDocumentStore DocStore;
         private object docStoreLock = new object();
 
-        public RavenDbPackageRepository(string baseDirectory) {
+        private RavenDbPackageRepository(string baseDirectory) {
             if (string.IsNullOrEmpty(baseDirectory)) { throw new ArgumentNullException("baseDirectory"); }
 
             this.BaseAddress = baseDirectory;
@@ -51,7 +71,7 @@
 
         public Package AddPackage(Package package) {
             if (package == null) { throw new ArgumentNullException("package"); }
-
+            
             using (var session = this.DocStore.OpenSession()) {
                 session.Store(package);
                 session.SaveChanges();
@@ -61,10 +81,13 @@
         }
 
         public IQueryable<Package> GetPackages() {
+
             IQueryable<Package> result = null;
             using (var session = this.DocStore.OpenSession()) {
                 result = from p in session.Query<Package>()
-                          select p;
+                         // http://ravendb.net/docs/client-api/querying/stale-indexes
+                         .Customize(x => x.WaitForNonStaleResultsAsOfNow())
+                         select p;
             }
 
             return result;
@@ -76,6 +99,7 @@
             IQueryable<Package> result = null;
             using (var session = this.DocStore.OpenSession()) {
                 result = from pkg in session.Query<Package>()
+                         .Customize(x => x.WaitForNonStaleResultsAsOfNow())
                          where pkg.Tags.Contains(tag)
                          select pkg;
             }
@@ -84,11 +108,30 @@
         }
 
         public IQueryable<Package> GetPackagesByName(string name) {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
+
+            IQueryable<Package> result = null;
+            using (var session = this.DocStore.OpenSession()) {
+                result = from p in session.Query<Package>()
+                         .Customize(x => x.WaitForNonStaleResultsAsOfNow())
+                         where string.Compare(name, p.Name, StringComparison.OrdinalIgnoreCase) == 0
+                         select p;
+            }
+
+            return result;
         }
 
         public Package GetPackage(Guid id) {
-            throw new NotImplementedException();
+            Package result = null;
+
+            using (var session = this.DocStore.OpenSession()) {
+                result = (from p in session.Query<Package>()
+                          .Customize(x => x.WaitForNonStaleResultsAsOfNow())
+                          where p.Id == id
+                          select p).SingleOrDefault();
+            }
+
+            return result;
         }
 
         public Package GetLatestPackageByName(string name) {
@@ -103,13 +146,18 @@
             // get all packages and delete them
             using (var session = this.DocStore.OpenSession()) {
                 var allPackages = from p in session.Query<Package>()
+                                  .Customize(x => x.WaitForNonStaleResultsAsOfNow())
                                   select p;
 
-                // TODO: is there a better way to delete a batch of objects?
-                allPackages.ToList().ForEach(p => {
-                    session.Delete(p);
+                List<Package> pkgList = allPackages.ToList();
+                if (pkgList.Count > 0) {
+                    // TODO: is there a better way to delete a batch of objects?
+                    pkgList.ForEach(p => {
+                        session.Delete(p);                        
+                    });
+
                     session.SaveChanges();
-                });
+                }
             }
         }
         #endregion
