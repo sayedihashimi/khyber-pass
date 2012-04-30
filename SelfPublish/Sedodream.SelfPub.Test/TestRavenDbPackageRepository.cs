@@ -129,7 +129,7 @@
             }
 
             [TestMethod]
-            public void ReturnsNullIfThePackageDoesntExis() {
+            public void ReturnsNullIfThePackageDoesntExist() {
                 RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
 
                 Package foundPackage = repo.GetPackage(Guid.NewGuid());
@@ -158,6 +158,8 @@
         public class TheGetPackagesByTagMethod{
             public TestContext TestContext { get; set; }
 
+            // The GetPackagesByTag method is not yet supported in RavenDbPackageRepository
+            [Ignore]
             [TestMethod]
             public void ReturnsPackagesWithTheGivenTag(){
                 RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);

@@ -120,48 +120,12 @@
 
         public IQueryable<Package> GetPackagesByTag(string tag) {
             if (string.IsNullOrEmpty(tag)) { throw new ArgumentNullException("tag"); }
-            IQueryable<Package> result = null;
-            using (var session = this.DocStore.OpenSession()) {
 
-                // result = session.Advanced.LuceneQuery<Package,Package>()
+            // TODO: Implement this method
+            // http://stackoverflow.com/questions/4207739/linq-query-with-multiple-contains-any-for-ravendb
+            // http://ayende.com/blog/4562/ravendb-index-management
 
-                // var dd = from pkg in session.Query<Package,
-                // Packages/ByTag
-
-                int maxLoop = 10;
-                int loopCounter = 0;
-                RavenQueryStatistics stats = null;
-                bool firstLoop = true;
-                while (stats == null || stats.IsStale) {
-                    loopCounter++;
-                    if (!firstLoop) {
-                        Thread.Sleep(100);
-                    }
-                    else {
-                        firstLoop = false;
-                    }
-
-                    if (loopCounter > maxLoop) { break; }
-
-                    /*
-                    var fooResult = session.Advanced.LuceneQuery<Package, Packages_ByTag>()
-                        // .Statistics(out stats)
-                            .Where(string.Format("Tags:({0})", tag));
-                    */
-
-                    //result = from p in fooResult
-                    //         select p;
-                }
-
-                // var dd = from pkg in session.Query<Package,
-                // Packages/ByTag
-                //result = from pkg in session.Query<Package>()
-                //      .Customize(x => x.WaitForNonStaleResultsAsOfNow())
-                //         where pkg.Tags.Contains(tag)
-                //         select pkg;
-            }
-
-            return result;
+            throw new NotSupportedException(string.Format(@"This method is not supported yet by {0}",this.GetType().Name));
         }
 
         public IQueryable<Package> GetPackagesByName(string name) {
