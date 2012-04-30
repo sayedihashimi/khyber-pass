@@ -75,9 +75,6 @@
     <Reference Include="Raven.Client.Lightweight">
       <HintPath>..\packages\RavenDB-Embedded.1.0.910-Unstable\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Client.Lightweight.FSharp">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.910-Unstable\lib\net40\Raven.Client.Lightweight.FSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Raven.Client.MvcIntegration">
       <HintPath>..\packages\RavenDB-Embedded.1.0.910-Unstable\lib\net40\Raven.Client.MvcIntegration.dll</HintPath>
     </Reference>
@@ -147,6 +144,7 @@
     <Compile Include="Deploy\IDeployHandler.cs" />
     <Compile Include="Deploy\MSDeployHandler.cs" />
     <Compile Include="Extensions\HttpClient.cs" />
+    <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Extensions\PathExtensions.cs" />
     <Compile Include="IJsonSearlizer.cs" />
     <Compile Include="MongoPackageRepository.cs" />

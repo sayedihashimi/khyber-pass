@@ -8,6 +8,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Sedodream.SelfPub.Common;
     using Sedodream.SelfPub.Test.Helpers;
+    using Sedodream.SelfPub.Common.Extensions;
 
     [TestClass]
     public class RavenDbPackageRepositoryTests {
@@ -41,7 +42,6 @@
 
                 // give the add operations time to complete 
                 // TODO: Is there a better way to do this?
-                Thread.Sleep(1000);
                 var allPackages = packageRepo.GetPackages();
                 int count = allPackages.Count();
 
@@ -49,6 +49,140 @@
                 Assert.AreEqual(numPackagesToAdd, allPackages.Count());
             }
 
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void ThrowsIfPackageIsNull(){
+                RavenDbPackageRepository packageRepo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+                
+                packageRepo.AddPackage(null);
+            }
+        }
+
+        [TestClass]
+        public class TheGetPackageByNameMethod{
+            public TestContext TestContext { get; set; }
+
+            [TestMethod]
+            public void ReturnsThePackageWithTheGivenName() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                // add a few random packages
+                int numPackages = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackages.Times(() => repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage()));
+
+                // add the package we want to find
+                Package package = RandomDataHelper.Instance.CreateRandomePackage();
+                repo.AddPackage(package);
+
+                // add a few more random packages
+                numPackages = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackages.Times(() => repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage()));
+
+                Package foundPackage = repo.GetPackagesByName(package.Name).SingleOrDefault();
+
+                Assert.IsNotNull(foundPackage);
+                CustomAssert.AreEqual(package, foundPackage);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void ThrowsIfNameIsNull() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                repo.GetPackagesByName(null);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void ThrowsIfNameIsEmpty() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                repo.GetPackagesByName(string.Empty);
+            }
+        }
+
+        [TestClass]
+        public class TheGetPackageByIdMethod {
+            public TestContext TestContext { get; set; }
+
+            [TestMethod]
+            public void ReturnsThePackageWithTheGivenId() {               
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                // add a few random packages
+                int numPackages = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackages.Times(() => repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage()));
+
+                repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage());
+
+                // add the package we want to find
+                Package package = RandomDataHelper.Instance.CreateRandomePackage();
+                repo.AddPackage(package);
+                // add a few more random packages
+                numPackages = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackages.Times(() => repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage()));
+
+                // find the package
+                Package foundPackage = repo.GetPackage(package.Id);
+                Assert.IsNotNull(foundPackage);
+                CustomAssert.AreEqual(package, foundPackage);
+            }
+
+            [TestMethod]
+            public void ReturnsNullIfThePackageDoesntExis() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                Package foundPackage = repo.GetPackage(Guid.NewGuid());
+
+                Assert.IsNull(foundPackage);
+            }
+
+        }
+
+        [TestClass]
+        public class TheGetRavenDbRepoForMethod{
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void ThrowsIfBaseDirectoryIsNull(){
+                RavenDbPackageRepository.GetRavenDbRepoFor(null);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void ThrowsIfBaseDirectoryIsEmpty(){
+                RavenDbPackageRepository.GetRavenDbRepoFor(string.Empty);
+            }
+        }
+
+        [TestClass]
+        public class TheGetPackagesByTagMethod{
+            public TestContext TestContext { get; set; }
+
+            [TestMethod]
+            public void ReturnsPackagesWithTheGivenTag(){
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+                // add a few packages
+                int numPackages = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackages.Times(()=>repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage()));
+
+                // add the package we are looking for with a specific tag
+                string tag = RandomDataHelper.Instance.Primitives.GetRandomString(10);
+                Package package = RandomDataHelper.Instance.CreateRandomePackage();
+                package.Tags.Add(tag);
+
+                // add a few more packages
+                numPackages = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackages.Times(()=>repo.AddPackage(RandomDataHelper.Instance.CreateRandomePackage()));
+
+                IQueryable<Package>foundPackages = repo.GetPackagesByTag(tag);
+
+                Assert.IsNotNull(foundPackages);
+                Assert.AreEqual(1,foundPackages.Count());
+
+                Package foundPackage = foundPackages.Single();
+                CustomAssert.AreEqual(package, foundPackage);           
+            }
+            
 
         }
 
@@ -67,4 +201,12 @@
             return packageRepo;
         }
     }
+
+
+
+
+
 }
+
+
+
