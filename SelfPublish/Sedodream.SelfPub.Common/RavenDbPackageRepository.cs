@@ -15,6 +15,7 @@
         private static IDictionary<string, RavenDbPackageRepository> RepoMap = new Dictionary<string, RavenDbPackageRepository>();
         private static object RepoMapLock = new object();
 
+        // TODO: convert to full path, then to lower and get then return the result
         public static RavenDbPackageRepository GetRavenDbRepoFor(string baseDirectory) {
             if (baseDirectory == null) { throw new ArgumentNullException("baseDirectory"); }
 

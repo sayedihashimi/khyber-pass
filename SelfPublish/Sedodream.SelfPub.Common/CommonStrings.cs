@@ -20,6 +20,8 @@
             public static string DataFolder = "dataFolder";
             public static string MongoDbRunnerConnectionString = "mondodbRunner";
             public static string RecordedPackagesCollectionName = "recordedPackages";
+
+            public static string RavenDataDir = @"ravenDataDir";
         }
 
         public static class Service {

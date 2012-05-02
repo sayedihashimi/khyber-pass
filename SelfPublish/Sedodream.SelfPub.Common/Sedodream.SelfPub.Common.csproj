@@ -143,6 +143,7 @@
     <Compile Include="Deploy\IDeployRecorder.cs" />
     <Compile Include="Deploy\IDeployHandler.cs" />
     <Compile Include="Deploy\MSDeployHandler.cs" />
+    <Compile Include="Deploy\RavenDbDeployRecorder.cs" />
     <Compile Include="Extensions\HttpClient.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Extensions\PathExtensions.cs" />

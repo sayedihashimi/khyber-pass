@@ -177,6 +177,7 @@
     <Compile Include="TestPathExtensions.cs" />
     <Compile Include="TestMSDeployDeploymentParameters.cs" />
     <Compile Include="TestObjectMapper.cs" />
+    <Compile Include="RavenDbDeployRecorderTests.cs" />
     <Compile Include="TestRavenDbPackageRepository.cs" />
   </ItemGroup>
   <ItemGroup>

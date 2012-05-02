@@ -9,7 +9,7 @@
     using Sedodream.SelfPub.Common;
     using Sedodream.SelfPub.Test.Helpers;
     using Sedodream.SelfPub.Common.Extensions;
-
+    
     [TestClass]
     public class RavenDbPackageRepositoryTests {
         [TestClass]
@@ -192,13 +192,10 @@
             if (testContext == null) { throw new ArgumentNullException("testContext"); }
 
             DirectoryInfo testCtxDirectory = new DirectoryInfo(testContext.TestDir);
-            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(new Config().GetAppSetting<string>(CommonTestStrings.RavenDbDir));
+            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(new Config().GetAppSetting<string>(CommonTestStrings.RavenDir));
 
             RavenDbPackageRepository packageRepo = RavenDbPackageRepository.GetRavenDbRepoFor(dataDbDir.FullName);
-            // RavenDbPackageRepository packageRepo = new RavenDbPackageRepository(dataDbDir.FullName);
             packageRepo.Reset();
-            // we have to give it some time to compelet
-            Thread.Sleep(1000);
 
             return packageRepo;
         }
