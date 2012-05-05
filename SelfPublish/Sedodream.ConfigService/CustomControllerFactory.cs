@@ -55,8 +55,11 @@
 
         private IPackageRepository CreatePackageRepository() {
             // TODO: Switch out for an IoC
-            return new MongoPackageRepository(
-                 new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString);
+            string ravenDbDataDirPath = System.Web.HttpContext.Current.Server.MapPath(new Config().GetAppSetting<string>(CommonStrings.Deployer.RavenDataDir, required: true));
+            return RavenDbPackageRepository.GetRavenDbRepoFor(ravenDbDataDirPath);
+
+            //return new MongoPackageRepository(
+            //     new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString);
         }
 
         private IJsonSearlizer CreateJsonSearlizer() {

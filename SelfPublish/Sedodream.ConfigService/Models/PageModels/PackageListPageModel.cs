@@ -7,8 +7,10 @@
     using MongoDB.Bson;
     using Sedodream.SelfPub.Common;
 
-    public class PackagePageModel {
+    public class PackagePageModel {        
         public PackagePageModel() {
+            this.Id = Guid.NewGuid();
+
             IList<SelectListItem> availableItems = new List<SelectListItem>();
             Enum.GetNames(typeof(KnownPackageTypes)).ToList().ForEach(name => {
                 SelectListItem item = new SelectListItem {

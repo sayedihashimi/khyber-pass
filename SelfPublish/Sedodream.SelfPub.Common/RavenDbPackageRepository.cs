@@ -65,7 +65,7 @@
         }
 
         private void AddIndexes() {
-            IndexCreation.CreateIndexes(typeof(Packages_ByTag).Assembly, this.DocStore);
+            // IndexCreation.CreateIndexes(typeof(Packages_ByTag).Assembly, this.DocStore);
 
             //this.DocStore.DatabaseCommands.PutIndex(@"Packages/ByTag",
             //    new IndexDefinitionBuilder<Package> {
