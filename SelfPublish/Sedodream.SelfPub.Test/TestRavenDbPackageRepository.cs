@@ -188,6 +188,67 @@
 
         }
 
+        [TestClass]
+        public class TheGetLatestPackageByNameMethod{
+            public TestContext TestContext { get; set; }
+            [TestMethod]
+            public void ReturnsTheLastestPackageWithTheGivenName_Only1PkgInRepo(){
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                Package package = RandomDataHelper.Instance.CreateRandomePackage();
+
+                repo.AddPackage(package);
+
+                Package foundPackage = repo.GetLatestPackageByName(package.Name);
+
+                Assert.IsNotNull(foundPackage);
+                CustomAssert.AreEqual(package,foundPackage);
+            }
+
+            public void ReturnsTheLastestPackageWithTheGivenName_MultiplePackagesInRepo() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                string pkgName = RandomDataHelper.Instance.Primitives.GetRandomString(10);
+                
+                // # add a few packages with a specfic name
+                int numPackagesToAdd = RandomDataHelper.Instance.Primitives.GetRandomInt(10);
+                numPackagesToAdd.Times(() => {
+                    Package pkg = RandomDataHelper.Instance.CreateRandomePackage();
+                    pkg.Name = pkgName;
+
+                    repo.AddPackage(pkg);
+                });
+
+                // now add the package we are actually looking to find
+
+                Package package = RandomDataHelper.Instance.CreateRandomePackage();
+                package.Name = pkgName;
+
+                repo.AddPackage(package);
+
+                Package foundPackage = repo.GetLatestPackageByName(package.Name);
+
+                Assert.IsNotNull(foundPackage);
+                CustomAssert.AreEqual(package, foundPackage);
+            }
+
+            [TestMethod]
+            public void ReturnsNullIfNoSuchPackageExists() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+                Package result = repo.GetLatestPackageByName(Guid.NewGuid().ToString());
+
+                Assert.IsNull(result);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(ArgumentNullException))]
+            public void ThrowsIfNameIsNull() {
+                RavenDbPackageRepository repo = RavenDbPackageRepositoryTests.GetRavenDbRepostiory(TestContext);
+
+                repo.GetLatestPackageByName(null);
+            }
+        }
+
         protected static RavenDbPackageRepository GetRavenDbRepostiory(TestContext testContext) {
             if (testContext == null) { throw new ArgumentNullException("testContext"); }
 
@@ -200,11 +261,6 @@
             return packageRepo;
         }
     }
-
-
-
-
-
 }
 
 

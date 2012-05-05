@@ -158,7 +158,17 @@
         }
 
         public Package GetLatestPackageByName(string name) {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(name)) { throw new ArgumentNullException("name"); }
+            Package result = null;
+
+            using (var session = this.DocStore.OpenSession()) {
+                result = (from p in session.Query<Package>()
+                          where name == p.Name
+                          orderby p.DateCreated descending
+                          select p).SingleOrDefault();
+            }
+
+            return result;
         }
 
         #region protected/private items

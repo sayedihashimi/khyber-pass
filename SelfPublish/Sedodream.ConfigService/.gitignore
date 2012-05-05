@@ -1,5 +1,6 @@
 # Folders to ignore #
 bin/
 obj/
+App_Data/ravendb-data/
 
 # Known files to ignore always #
