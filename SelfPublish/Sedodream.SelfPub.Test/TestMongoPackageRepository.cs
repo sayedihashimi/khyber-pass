@@ -13,42 +13,14 @@
 
     [TestClass]
     public class TestMongoPackageRepository {
-        private static Process mongoDbProcess;
-
         [ClassInitialize]
         public static void Initalize(TestContext testContext) {
-            XmlConfigurator.Configure();
-            // we have to start mongo DB
-            DirectoryInfo mongoDbDir = GetMongoDbDir(testContext);
-            var mongodbexe = mongoDbDir.GetFiles("mongod.exe").Single();
-
-            DirectoryInfo testCtxDirectory = new DirectoryInfo(testContext.TestDir);
-            DirectoryInfo dataDbDir = testCtxDirectory.CreateSubdirectory(new Config().GetAppSetting<string>(CommonTestStrings.MongodbDir));
-
-            string connectionString =new Config().GetConnectionString(CommonStrings.Database.ConnectionStringName).ConnectionString;
-            MongoUrlBuilder mub = new MongoUrlBuilder(connectionString);
-            string args = string.Format(@"--dbpath ""{0}"" --port {1}", dataDbDir.FullName, mub.Server.Port);
-
-            var psi = new ProcessStartInfo {
-                FileName = mongodbexe.FullName,
-                WorkingDirectory = testCtxDirectory.FullName,
-                Arguments = args,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-
-            mongoDbProcess = Process.Start(psi);
+            MongoUnitTestBase.Initalize(testContext);
         }
 
         [ClassCleanup]
         public static void Cleanup() {
-            // we have to stop mongo DB
-            mongoDbProcess.CloseMainWindow();
-            mongoDbProcess.WaitForExit(5 * 1000);
-            if (!mongoDbProcess.HasExited) {
-                mongoDbProcess.Kill();
-            }
+            MongoUnitTestBase.Cleanup();
         }
 
         [TestMethod]
@@ -189,19 +161,6 @@
             Package foundPackage = repo.GetPackage(package.Id);
             Assert.IsNotNull(foundPackage);
             CustomAssert.AreEqual(package, foundPackage);
-        }
-
-        private static DirectoryInfo GetMongoDbDir(TestContext testContext) {
-            if (testContext == null) { throw new ArgumentNullException("testContext"); }
-
-            var mongoDbBindir =
-                new DirectoryInfo(testContext.TestDir)
-                    .Parent.Parent.Parent
-                    .GetDirectories("lib").Single()
-                    .GetDirectories("mongodb*").Single()
-                    .GetDirectories("bin").Single();
-
-            return mongoDbBindir;
         }
     }
 }

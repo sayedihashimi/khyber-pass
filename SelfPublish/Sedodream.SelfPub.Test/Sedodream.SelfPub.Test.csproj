@@ -101,6 +101,7 @@
     <Compile Include="CustomAssert.cs" />
     <Compile Include="Helpers\RandomPrimitives.cs" />
     <Compile Include="Helpers\RandomStringGenerator.cs" />
+    <Compile Include="MongoUnitTestBase.cs" />
     <Compile Include="TestDeployerConfig.cs" />
     <Compile Include="TestMongoPackageRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
