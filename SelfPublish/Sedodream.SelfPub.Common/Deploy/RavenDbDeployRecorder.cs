@@ -57,7 +57,7 @@
 
         // Should only be called by the unit-tests
         internal void Reset() {
-            RavenDbDeployRecorder.Instance.Reset();
+            this.RavenRepo.Reset();
         }
     }
 }
