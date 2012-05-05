@@ -7,5 +7,6 @@ namespace Sedodream.SelfPub.Test {
 
     public static class CommonTestStrings {
         public static string MongodbDir = @"mongodbDir";
+        public static string RavenDir = @"ravenDbDir-unit-test";
     }
 }

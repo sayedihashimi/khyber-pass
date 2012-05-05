@@ -23,8 +23,11 @@
         private IJsonSearlizer Searlizer { get; set; }
         private IDeployRecorder DeployRecorder { get; set; }
 
+        //public Deployer()
+        //    : this(new JsonNetSearlizer(),MongoDbDeployRecorder.Instance) {
+        //}
         public Deployer()
-            : this(new JsonNetSearlizer(),MongoDbDeployRecorder.Instance) {
+            : this(new JsonNetSearlizer(), RavenDbDeployRecorder.Instance) {
         }
 
         public Deployer(IJsonSearlizer searlizer,IDeployRecorder recorder) {
